@@ -323,7 +323,7 @@ input[type='number'] {
 }
 
 select.filter-box,
-#muscleFilterSelect {
+#muscleFilterSelect, #workoutFilter, #exerciseFilter {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
