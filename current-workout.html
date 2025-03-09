@@ -7,6 +7,12 @@
     <title>История тренировок</title>
     <link rel="stylesheet" href="style.css">
     <style>
+#increaseWeight, #decreaseWeight, #increaseReps, #decreaseReps {
+margin-bottom: 7px;
+    margin-top: 3px;
+    height: 41.6px;
+}
+        
         /* Стили для истории тренировок */
         .history-item {
             display: flex;
@@ -234,14 +240,14 @@
                 <label>Повторений:</label>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button type="button" id="decreaseReps">−</button>
-                    <input type="number" id="reps" value="${exercise.reps}" style="text-align: center;">
+                    <input type="number" id="reps" value="${exercise.reps}" style="text-align: center; width: 120px;">
                     <button type="button" id="increaseReps">+</button>
                 </div>
 
                 <label>Вес (кг):</label>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button type="button" id="decreaseWeight">−</button>
-                    <input type="number" id="weight" value="${exercise.weight}" step="0.5" style="text-align: center;">
+                    <input type="number" id="weight" value="${exercise.weight}" step="0.5" style="text-align: center; width: 120px;">
                     <button type="button" id="increaseWeight">+</button>
                 </div>
             `;
