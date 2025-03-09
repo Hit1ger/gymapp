@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Файлы</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header style="">
+        <p>Файлы</p>
+    </header>
+
+    <main>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p>Тренировки</p>
+            <div style="display: flex; justify-content: space-between; gap: 10px;"><button id="downloadWorkoutsJSON">Скачать</button>
+                <button id="uploadWorkoutsJSON">Загрузить</button>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p>История тренировок</p>
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <button id="downloadWorkoutHistoryJSON">Скачать</button>
+                <button id="uploadWorkoutHistoryJSON">Загрузить</button>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p>Упражнения</p>
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <button id="downloadExercisesJSON">Скачать</button>
+                <button id="uploadExercisesJSON">Загрузить</button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <nav class="footer-nav">
+            <a href="index.html" class="footer-link">Главная</a>
+            <a href="workout-list.html" class="footer-link">Тренировки</a>
+            <a href="current-workout.html" class="footer-link">Старт</a>
+            <a href="analytics.html" class="footer-link">Анализ</a>
+            <a href="base.html" class="footer-link">Упражнения</a>
+            <a href="files.html" class="footer-link active">Файлы</a>
+        </nav>
+    </footer>
+
+    <!-- Скрытые input для загрузки файлов -->
+    <input type="file" id="uploadWorkoutsInput" accept=".json" style="display: none;">
+    <input type="file" id="uploadHistoryInput" accept=".json" style="display: none;">
+    <input type="file" id="uploadExercisesInput" accept=".json" style="display: none;">
+
+    <script>
+        // Функция для скачивания данных из localStorage в виде JSON-файла
+        function downloadData(key, filename) {
+            const data = localStorage.getItem(key) || "[]";
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(data);
+            const downloadAnchor = document.createElement("a");
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", filename);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+        }
+
+        // Функция обработки загрузки файла и сохранения данных в localStorage
+        function uploadData(event, key) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const loadedData = JSON.parse(e.target.result);
+                    // Проверяем тип данных по необходимости, здесь просто сохраняем
+                    localStorage.setItem(key, JSON.stringify(loadedData));
+                    alert("JSON загружен успешно");
+                    // При необходимости можно перезагрузить страницу или обновить отображение
+                } catch (error) {
+                    alert("Ошибка загрузки файла! Убедитесь, что это корректный JSON.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Обработчики для секции Тренировки (ключ "workouts")
+        document.getElementById("downloadWorkoutsJSON").addEventListener("click", () => {
+            downloadData("workouts", "workouts.json");
+        });
+        document.getElementById("uploadWorkoutsJSON").addEventListener("click", () => {
+            document.getElementById("uploadWorkoutsInput").click();
+        });
+        document.getElementById("uploadWorkoutsInput").addEventListener("change", (e) => {
+            uploadData(e, "workouts");
+        });
+
+        // Обработчики для секции История тренировок (ключ "history")
+        document.getElementById("downloadWorkoutHistoryJSON").addEventListener("click", () => {
+            downloadData("history", "history.json");
+
+        });
+        document.getElementById("uploadWorkoutHistoryJSON").addEventListener("click", () => {
+            document.getElementById("uploadHistoryInput").click();
+        });
+        document.getElementById("uploadHistoryInput").addEventListener("change", (e) => {
+            uploadData(e, "history");
+        });
+
+        // Обработчики для секции Упражнения (ключ "exercises")
+        document.getElementById("downloadExercisesJSON").addEventListener("click", () => {
+            downloadData("exercises", "exercises.json");
+        });
+        document.getElementById("uploadExercisesJSON").addEventListener("click", () => {
+            document.getElementById("uploadExercisesInput").click();
+        });
+        document.getElementById("uploadExercisesInput").addEventListener("change", (e) => {
+            uploadData(e, "exercises");
+        });
+    </script>
+</body>
+
+</html>
