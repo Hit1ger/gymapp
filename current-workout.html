@@ -216,7 +216,7 @@
             currentWorkout.startTime = null;
             currentExerciseIndex = 0;
             currentWorkout.exercises.forEach(e => e.setsDetails = []);
-            document.getElementById("workoutTitle").textContent = "Тренировка: " + currentWorkout.name;
+            document.getElementById("workoutTitle").textContent = currentWorkout.name;
             loadExercise();
             closeModal("workoutModal");
             document.getElementById("exerciseModal").style.display = "flex";
