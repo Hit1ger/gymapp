@@ -13,7 +13,7 @@ let exercises = [];
 function renderExercises() {
   const exerciseList = document.getElementById("exerciseContainer");
   const exerciseCount = document.getElementById("exerciseCount");
-  exerciseList.innerHTML = "";
+  exerciseContainer.innerHTML = "";
   exerciseCount.textContent = `(${exercises.length})`;
 
   // Перебираем упражнения и для каждого создаём элемент
