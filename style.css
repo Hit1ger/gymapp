@@ -197,6 +197,10 @@ label {
   align-items: center;
 }
 
+#tipText {
+  margin: 10px;
+}
+
 .exercise-item > div label {
   flex: 1; /* Пусть лейбл растягивается на оставшееся пространство */
   min-width: 120px; /* Можно задать разумный минимум */
