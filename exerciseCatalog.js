@@ -1,3 +1,84 @@
+// Функция обновления опций фильтра (группы мышц)
+function updateMuscleFilterOptions() {
+  const muscleFilter = document.getElementById("muscleFilter");
+  const searchInput = document.getElementById("searchInput");
+  if (!muscleFilter || !searchInput) return;
+  
+  const searchValue = searchInput.value.toLowerCase();
+
+  // Фильтруем упражнения, учитывая поисковый запрос
+  const filtered = exercises.filter(exercise => {
+    const allText = exercise.title + " " + exercise.description + " " + exercise.muscle_group.join(" ");
+    return allText.toLowerCase().includes(searchValue);
+  });
+
+  // Собираем группы мышц из отфильтрованных упражнений
+  const muscleGroups = new Set();
+  filtered.forEach(ex => {
+    ex.muscle_group.forEach(m => muscleGroups.add(m.trim()));
+  });
+
+  // Восстанавливаем выбранное значение из localStorage
+  const storedMuscleFilter = localStorage.getItem("muscleFilterValue") || "";
+
+  // Обновляем содержимое селектора
+  muscleFilter.innerHTML = `<option value="">Все группы мышц</option>`;
+  muscleGroups.forEach(muscle => {
+    const option = document.createElement("option");
+    option.value = muscle;
+    option.textContent = muscle;
+    muscleFilter.appendChild(option);
+  });
+
+  // Если в localStorage хранится выбранная группа и она есть в множестве, то устанавливаем её
+  if (storedMuscleFilter && muscleGroups.has(storedMuscleFilter)) {
+    muscleFilter.value = storedMuscleFilter;
+  } else {
+    muscleFilter.value = "";
+    localStorage.setItem("muscleFilterValue", "");
+  }
+}
+
+// Функция фильтрации упражнений по поисковому запросу и выбранной группе мышц
+function filterExercises() {
+  const searchInput = document.getElementById("searchInput");
+  const muscleFilter = document.getElementById("muscleFilter");
+  if (!searchInput || !muscleFilter) return;
+  
+  const searchValue = searchInput.value.toLowerCase();
+  const selectedMuscle = muscleFilter.value.trim();
+
+  document.querySelectorAll(".exercise-item").forEach(item => {
+    // Текст внутри элемента включает заголовок, описание и прочее
+    const text = item.textContent.toLowerCase();
+    // Проверяем соответствие поисковому запросу
+    const matchesSearch = text.includes(searchValue);
+    // Проверяем, если выбрана группа мышц – есть ли она в data-атрибуте
+    const itemMuscles = item.getAttribute("data-muscle-group")?.split(",").map(m => m.trim()) || [];
+    const matchesMuscle = selectedMuscle === "" || itemMuscles.includes(selectedMuscle);
+
+    if (matchesSearch && matchesMuscle) {
+      item.style.display = "block";
+    } else {
+      item.style.display = "none";
+    }
+  });
+
+  // Обновляем счетчик результатов поиска (если требуется)
+  const visibleCount = document.querySelectorAll(".exercise-item[style*='display: block']").length;
+  const searchResultCount = document.getElementById("searchResultCount");
+  if (searchResultCount) {
+    if (searchValue.trim() !== "") {
+      searchResultCount.textContent = "Результаты поиска: " + visibleCount;
+      searchResultCount.style.display = "block";
+    } else {
+      searchResultCount.textContent = "";
+      searchResultCount.style.display = "none";
+    }
+}
+
+
+
 // Если функции updateMuscleFilterOptions и filterExercises не определены в других файлах,
 // добавляем базовые заглушки, чтобы ошибки не возникали.
 function updateMuscleFilterOptions() {
