@@ -7,7 +7,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon-180.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Главная</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
@@ -41,6 +40,23 @@
 </header>
 
 <main>
+
+<div id="svgWrapper">
+  <div id="calves-container" class="svg-holder"></div>
+  <div id="quads-container" class="svg-holder"></div>
+  <div id="abdominals-container" class="svg-holder"></div>
+  <div id="obliques-container" class="svg-holder"></div>
+  <div id="hands-container" class="svg-holder"></div>
+  <div id="forearms-container" class="svg-holder"></div>
+  <div id="biceps-container" class="svg-holder"></div>
+  <div id="front-shoulders-container" class="svg-holder"></div>
+  <div id="chest-container" class="svg-holder"></div>
+  <div id="traps-container" class="svg-holder"></div>
+  <!-- Если необходимо, можно добавить и контейнер для модели тела -->
+  <div id="body-container" class="svg-holder"></div>
+</div>
+
+
 
     <div id="svgWrapper">
 
@@ -299,6 +315,25 @@
 <script src="sw.js"></script>
 <script src="WorkoutSaver.js"></script>
 <script src="WorkoutProgress.js"></script>
+<script>
+function loadSVG(filename, containerId) {
+  fetch(filename)
+    .then(response => response.text())
+    .then(svgContent => {
+      document.getElementById(containerId).innerHTML = svgContent;
+    })
+    .catch(err => console.error(`Ошибка загрузки ${filename}:`, err));
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  loadSVG('calves.svg', 'calves-container');
+  loadSVG('quads.svg', 'quads-container');
+  loadSVG('abdominals.svg', 'abdominals-container');
+  // Загрузите остальные svg по аналогии
+});
+
+
+</script>
 
 </body>
 
