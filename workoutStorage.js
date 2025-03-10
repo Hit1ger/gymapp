@@ -98,9 +98,9 @@ function uploadData(event, key) {
 //    downloadData("history", "history.json");
 //});
 
-document.getElementById("uploadWorkoutHistoryJSON").addEventListener("click", () => {
-    document.getElementById("uploadHistoryInput").click();
-});
-document.getElementById("uploadHistoryInput").addEventListener("change", (e) => {
-    uploadData(e, "history");
-});
+//document.getElementById("uploadWorkoutHistoryJSON").addEventListener("click", () => {
+//   document.getElementById("uploadHistoryInput").click();
+//});
+//document.getElementById("uploadHistoryInput").addEventListener("change", (e) => {
+//    uploadData(e, "history");
+//});
