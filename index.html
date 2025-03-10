@@ -41,11 +41,11 @@
 
 <main>
 <div id="svgWrapper">
-    <!-- Контейнер для первого SVG-файла -->
-    <div id="svgFile1" class="svg-holder"></div>
-    <!-- Контейнер для второго SVG-файла -->
-    <div id="svgFile2" class="svg-holder"></div>
-  </div>
+      <!-- Контейнер для первого SVG-файла -->
+      <div id="svgFile1" class="svg-holder"></div>
+      <!-- Контейнер для второго SVG-файла -->
+      <div id="svgFile2" class="svg-holder"></div>
+    </div>
     
     <div id="svgWrapper">
 
@@ -304,5 +304,38 @@
 <script src="sw.js"></script>
 <script src="WorkoutSaver.js"></script>
 <script src="WorkoutProgress.js"></script>
+
+   <script>
+    function loadSVG(fileName, containerId) {
+      fetch(fileName)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Ошибка загрузки ${fileName}: ${response.statusText}`);
+          }
+          return response.text();
+        })
+        .then(svgContent => {
+          document.getElementById(containerId).innerHTML = svgContent;
+        })
+        .catch(error => console.error(error));
+    }
+
+    // Функция, вызывающая логику обновления цвета мышц
+    function initializeMuscleLogic() {
+      const workoutData = JSON.parse(localStorage.getItem("history")) || [];
+      updateMuscleColors(workoutData);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Загрузка обоих SVG-файлов, которые расположены в корне проекта
+      loadSVG('svg1.svg', 'svgFile1');
+      loadSVG('svg2.svg', 'svgFile2');
+
+      // Для корректного обновления цвета мышц убедитесь, что оба SVG загружены.
+      // Можно установить задержку или отследить завершение загрузки каждого файла.
+      // В данном примере вызываем логику с небольшой задержкой.
+      setTimeout(initializeMuscleLogic, 500);
+    });
+  </script>
 
 </html>
