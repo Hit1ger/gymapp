@@ -40,7 +40,13 @@
 </header>
 
 <main>
-
+<div id="svgWrapper">
+    <!-- Контейнер для первого SVG-файла -->
+    <div id="svgFile1" class="svg-holder"></div>
+    <!-- Контейнер для второго SVG-файла -->
+    <div id="svgFile2" class="svg-holder"></div>
+  </div>
+    
     <div id="svgWrapper">
 
     <!-- Первая картинка -->
@@ -299,7 +305,30 @@
 <script src="WorkoutSaver.js"></script>
 <script src="WorkoutProgress.js"></script>
 
+<script>
+    function loadSVG(fileName, containerId) {
+      fetch(fileName)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Ошибка загрузки ${fileName}: ${response.statusText}`);
+          }
+          return response.text();
+        })
+        .then(svgContent => {
+          document.getElementById(containerId).innerHTML = svgContent;
+          // После загрузки SVG можно вызвать функцию обновления цветов мышц, если требуется:
+          // updateMuscleColors(workoutData);
+        })
+        .catch(error => console.error(error));
+    }
 
+    document.addEventListener("DOMContentLoaded", () => {
+      // Загрузка первого SVG-файла, например, body-part1.svg
+      loadSVG('svg1.svg', 'svgFile1');
+      // Загрузка второго SVG-файла, например, body-part2.svg
+      loadSVG('svg2.svg', 'svgFile2');
+    });
+  </script>
 </body>
 
 </html>
