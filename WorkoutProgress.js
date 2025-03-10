@@ -130,5 +130,5 @@ document.addEventListener("DOMContentLoaded", () => {
     // Для корректного обновления цвета мышц убедитесь, что оба SVG загружены.
     // Можно установить задержку или отследить завершение загрузки каждого файла.
     // В данном примере вызываем логику с небольшой задержкой.
-    setTimeout(initializeMuscleLogic, 500);
+    setTimeout(initializeMuscleLogic, 100);
 });
