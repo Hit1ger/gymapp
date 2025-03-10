@@ -94,10 +94,10 @@ function uploadData(event, key) {
 }
 
 // Обработчики для секции История тренировок (ключ "history")
-document.getElementById("downloadWorkoutHistoryJSON").addEventListener("click", () => {
-    downloadData("history", "history.json");
+//document.getElementById("downloadWorkoutHistoryJSON").addEventListener("click", () => {
+//    downloadData("history", "history.json");
+//});
 
-});
 document.getElementById("uploadWorkoutHistoryJSON").addEventListener("click", () => {
     document.getElementById("uploadHistoryInput").click();
 });
