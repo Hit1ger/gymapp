@@ -591,6 +591,7 @@ select.filter-box,
   gap: 20px;
   justify-content: center;
   margin-top: 20px;
+  min-height: 339px;
 }
 .svg-holder {
   width: 300px;
