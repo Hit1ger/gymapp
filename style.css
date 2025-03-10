@@ -98,6 +98,9 @@ header {
     /* По умолчанию скрыто */
     display: none;
     flex-direction: column;
+            z-index: 9999;
+        height: 100vh;
+            background: #ffffff;
   }
   .site-nav ul {
     flex-direction: column;
