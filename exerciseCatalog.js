@@ -1,17 +1,18 @@
 let exercises = [];
 
+// Функция рендеринга списка упражнений
 function renderExercises() {
   const exerciseContainer = document.getElementById("exerciseContainer");
   const exerciseCount = document.getElementById("exerciseCount");
   exerciseContainer.innerHTML = "";
   exerciseCount.textContent = `(${exercises.length})`;
 
-  // Перебираем упражнения с индексом для возможности удаления
+  // Перебираем упражнения и для каждого создаём элемент
   exercises.forEach((exercise, index) => {
     const exerciseDiv = document.createElement("div");
     exerciseDiv.classList.add("exercise-item");
 
-    // Основной блок
+    // Основной блок с заголовком и информацией о группе мышц
     exerciseDiv.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
         <div>
@@ -22,7 +23,7 @@ function renderExercises() {
       </div>
     `;
 
-    // Скрытая часть с деталями и кнопкой удаления
+    // Скрытая часть с подробностями упражнения и кнопками
     const detailsDiv = document.createElement("div");
     detailsDiv.classList.add("exercise-details");
     detailsDiv.style.display = "none";
@@ -32,25 +33,37 @@ function renderExercises() {
       <p>Повторения: ${exercise.reps}</p>
       <p>Перерыв: ${exercise.rest_time} секунд</p>
       <p>Оборудование: ${exercise.equipment}</p>
-      <button class="delete-exercise" style="margin-top: 15px; margin-bottom: 5px; width: 100%; background: red; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; margin-top: 10px;">
+      <!-- Новая кнопка "Сделать упражнение" -->
+      <button class="do-exercise" style="margin-bottom: 5px; width: 100%; background: green; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px;">
+        Сделать упражнение
+      </button>
+      <!-- Кнопка удаления упражнения -->
+      <button class="delete-exercise" style="margin-top: 10px; width: 100%; background: red; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px;">
         Удалить упражнение
       </button>
     `;
 
-    // Обработчик удаления упражнения
+    // Обработчик для кнопки "Удалить упражнение"
     const deleteButton = detailsDiv.querySelector(".delete-exercise");
     deleteButton.addEventListener("click", (event) => {
-      event.stopPropagation(); // предотвращаем переключение видимости деталей
+      event.stopPropagation(); // чтобы не срабатывал клик по всему блоку
       if (confirm("Удалить упражнение?")) {
         exercises.splice(index, 1); // удаляем упражнение из массива
         localStorage.setItem("exercises", JSON.stringify(exercises));
-        renderExercises(); // обновляем отображение списка
+        renderExercises(); // перерисовываем список
       }
+    });
+
+    // Обработчик для кнопки "Сделать упражнение"
+    const doExerciseButton = detailsDiv.querySelector(".do-exercise");
+    doExerciseButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      startSingleExerciseWorkout(exercise);
     });
 
     exerciseDiv.appendChild(detailsDiv);
 
-    // По клику по упражнению переключаем видимость деталей
+    // Переключение отображения деталей по клику на весь блок упражнения
     exerciseDiv.addEventListener("click", () => {
       detailsDiv.style.display = detailsDiv.style.display === "none" ? "block" : "none";
     });
@@ -60,117 +73,64 @@ function renderExercises() {
     exerciseContainer.appendChild(exerciseDiv);
   });
 
-  // Сохраняем обновлённый список в localStorage
+  // Сохраняем обновлённый список упражнений в localStorage
   localStorage.setItem("exercises", JSON.stringify(exercises));
 }
 
+// Функция для запуска тренировки с одним упражнением
+function startSingleExerciseWorkout(exercise) {
+  // Создаём объект тренировки с одним упражнением
+  currentWorkout = {
+    name: "Тренировка: " + exercise.title,
+    exercises: [{
+      name: exercise.title,
+      reps: exercise.reps,
+      weight: 0, // начальное значение, можно изменить
+      rest: exercise.rest_time,
+      setsDetails: [] // массив для хранения выполненных подходов
+    }]
+  };
+  currentExerciseIndex = 0; // начинаем с первого (единственного) упражнения
 
-// Обновляем опции фильтра (группы мышц)
-function updateMuscleFilterOptions() {
-    const muscleFilter = document.getElementById("muscleFilter");
-    const searchValue = document.getElementById("searchInput").value.toLowerCase();
+  // Устанавливаем заголовок модального окна тренировки
+  document.getElementById("workoutTitle").textContent = currentWorkout.name;
 
-    // Фильтруем, чтобы находить только те упражнения, которые видны при текущем поиске
-    const filtered = exercises.filter(exercise => {
-        const allText = exercise.title + " " + exercise.description + " " + exercise.muscle_group.join(" ");
-        return allText.toLowerCase().includes(searchValue);
-    });
-    const muscleGroups = new Set();
-    filtered.forEach(ex => ex.muscle_group.forEach(m => muscleGroups.add(m)));
+  // Вызываем функцию loadExercise() из файла WorkoutSaver.js для загрузки упражнения в модальное окно
+  loadExercise();
 
-    const storedMuscleFilter = localStorage.getItem("muscleFilterValue") || "";
-    muscleFilter.innerHTML = `<option value="">Все группы мышц</option>`;
-
-    muscleGroups.forEach(muscle => {
-        const option = document.createElement("option");
-        option.value = muscle;
-        option.textContent = muscle;
-        muscleFilter.appendChild(option);
-    });
-
-    if (storedMuscleFilter && muscleGroups.has(storedMuscleFilter)) {
-        muscleFilter.value = storedMuscleFilter;
-    } else {
-        muscleFilter.value = "";
-        localStorage.setItem("muscleFilterValue", "");
-    }
+  // Открываем модальное окно тренировки
+  document.getElementById("exerciseModal").style.display = "flex";
 }
 
-function filterExercises() {
-    const searchValue = document.getElementById("searchInput").value.toLowerCase();
-    const muscleValue = document.getElementById("muscleFilter").value;
-    let visibleCount = 0;
+// Остальной код файла (функции фильтрации, восстановления поиска и т.д.) оставьте без изменений
 
-    document.querySelectorAll(".exercise-item").forEach(item => {
-        const matchesSearch = item.textContent.toLowerCase().includes(searchValue);
-        const muscleGroups = item.getAttribute("data-muscle-group") ?
-            item.getAttribute("data-muscle-group").split(",") : [];
-        const matchesMuscle = !muscleValue || muscleGroups.some(m => m.trim() === muscleValue.trim());
-
-        if (matchesSearch && matchesMuscle) {
-            item.style.display = "block";
-            visibleCount++;
-        } else {
-            item.style.display = "none";
-        }
-    });
-
-    const resultSpan = document.getElementById("searchResultCount");
-    if (searchValue.trim() !== "") {
-        resultSpan.textContent = "Результаты поиска: " + visibleCount;
-        resultSpan.style.display = "block";
-    } else {
-        resultSpan.textContent = "";
-        resultSpan.style.display = "none";
-    }
-}
-
-function resetSearch() {
-    document.getElementById("searchInput").value = "";
-    localStorage.setItem("searchInputValue", "");
-    filterExercises();
-    updateMuscleFilterOptions();
-}
-
-// Загрузка / рендер + сортировка по убыванию
+// Пример: загрузка упражнений и навешивание обработчиков после загрузки страницы
 document.addEventListener("DOMContentLoaded", () => {
-    const storedExercises = localStorage.getItem("exercises");
-    if (storedExercises) {
-        exercises = JSON.parse(storedExercises);
-    } else {
-        // Если в localStorage ничего нет, попробуем загрузить из "db/exercise.json" (если требуется)
-        // Иначе можно сразу exercises = [];
-        /*
-        fetch("db/exercise.json")
-            .then(response => response.json())
-            .then(data => { exercises = data; ... })
-            .catch(error => console.error("Ошибка загрузки:", error));
-        */
-    }
+  const storedExercises = localStorage.getItem("exercises");
+  if (storedExercises) {
+    exercises = JSON.parse(storedExercises);
+  }
+  renderExercises();
+  updateMuscleFilterOptions();
 
-    // ВАЖНО: сортируем exercises по убыванию rating
-    // exercises.sort((a, b) => b.rating - a.rating);
+  // Восстанавливаем поисковый запрос, если был
+  const storedSearchValue = localStorage.getItem("searchInputValue");
+  if (storedSearchValue !== null) {
+    document.getElementById("searchInput").value = storedSearchValue;
+  }
+  filterExercises();
+  updateMuscleFilterOptions();
 
-    renderExercises();
-    updateMuscleFilterOptions();
-
-    // Восстанавливаем поисковый запрос, если был
-    const storedSearchValue = localStorage.getItem("searchInputValue");
-    if (storedSearchValue !== null) {
-        document.getElementById("searchInput").value = storedSearchValue;
-    }
-
+  // Обработчик для поля поиска
+  document.getElementById("searchInput").addEventListener("input", function () {
+    localStorage.setItem("searchInputValue", this.value);
     filterExercises();
     updateMuscleFilterOptions();
+  });
 
-    // Навешиваем обработчики
-    document.getElementById("searchInput").addEventListener("input", function () {
-        localStorage.setItem("searchInputValue", this.value);
-        filterExercises();
-        updateMuscleFilterOptions();
-    });
-    document.getElementById("muscleFilter").addEventListener("change", function () {
-        localStorage.setItem("muscleFilterValue", this.value);
-        filterExercises();
-    });
+  // Обработчик для выбора группы мышц
+  document.getElementById("muscleFilter").addEventListener("change", function () {
+    localStorage.setItem("muscleFilterValue", this.value);
+    filterExercises();
+  });
 });
