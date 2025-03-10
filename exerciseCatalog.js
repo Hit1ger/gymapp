@@ -1,19 +1,19 @@
 // Если функции updateMuscleFilterOptions и filterExercises не определены в других файлах,
 // добавляем базовые заглушки, чтобы ошибки не возникали.
 function updateMuscleFilterOptions() {
-  // Если нужна логика обновления фильтров – добавьте её здесь.
+  // Добавьте логику, если необходимо.
 }
 function filterExercises() {
-  // Если нужна логика поиска – добавьте её здесь.
+  // Добавьте логику, если необходимо.
 }
 
 let exercises = [];
 
 // Функция рендеринга списка упражнений
 function renderExercises() {
-  const exerciseContainer = document.getElementById("exerciseContainer");
+  const exerciseList = document.getElementById("exerciseList");
   const exerciseCount = document.getElementById("exerciseCount");
-  exerciseContainer.innerHTML = "";
+  exerciseList.innerHTML = "";
   exerciseCount.textContent = `(${exercises.length})`;
 
   // Перебираем упражнения и для каждого создаём элемент
@@ -79,7 +79,7 @@ function renderExercises() {
 
     // Добавляем атрибут для фильтрации по группам мышц (если используется)
     exerciseDiv.setAttribute("data-muscle-group", exercise.muscle_group.map(m => m.trim()).join(","));
-    exerciseContainer.appendChild(exerciseDiv);
+    exerciseList.appendChild(exerciseDiv);
   });
 
   // Сохраняем обновлённый список упражнений
@@ -89,7 +89,7 @@ function renderExercises() {
 function startSingleExerciseWorkout(exercise) {
   // Получаем список упражнений из localStorage
   const storedExercises = JSON.parse(localStorage.getItem("exercises")) || [];
-  // Ищем упражнение по названию (без учёта регистра и лишних пробелов)
+  // Ищем упражнение по названию (без учета регистра и лишних пробелов)
   const currentExerciseData = storedExercises.find(item =>
     item.title.toLowerCase().trim() === exercise.title.toLowerCase().trim()
   );
@@ -99,18 +99,17 @@ function startSingleExerciseWorkout(exercise) {
   }
 
   // Формируем объект тренировки, используя данные из localStorage
-  // Название, количество подходов (sets), повторения (reps) и таймер (rest_time) берутся из currentExerciseData
   currentWorkout = {
-    name: currentExerciseData.title, // имя тренировки равно названию упражнения
+    name: currentExerciseData.title,
     exercises: [{
       name: currentExerciseData.title,
       reps: currentExerciseData.reps,
-      weight: 0,                 // начальное значение веса, его можно изменить пользователем
+      weight: 0, // начальное значение веса
       rest: currentExerciseData.rest_time,
-      setsDetails: []            // сюда будут записываться данные по подходам
+      setsDetails: []
     }]
   };
-  currentExerciseIndex = 0; // Единственное упражнение
+  currentExerciseIndex = 0; // единственное упражнение
 
   // Устанавливаем заголовок модального окна тренировки
   const workoutTitleEl = document.getElementById("workoutTitle");
@@ -121,7 +120,7 @@ function startSingleExerciseWorkout(exercise) {
     return;
   }
 
-  // Вызываем функцию loadExercise() из WorkoutSaver.js – она должна сформировать интерфейс модального окна
+  // Вызываем функцию loadExercise() из WorkoutSaver.js, чтобы сформировать интерфейс тренировки
   if (typeof loadExercise === "function") {
     loadExercise();
   } else {
@@ -138,7 +137,6 @@ function startSingleExerciseWorkout(exercise) {
   }
 }
 
-
 // Загрузка упражнений и установка обработчиков при загрузке страницы
 document.addEventListener("DOMContentLoaded", () => {
   // Загрузка упражнений из localStorage, если они там есть
@@ -149,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderExercises();
   updateMuscleFilterOptions();
 
-  // Если используется поиск, добавьте обработчики ниже (или удалите, если не нужно)
+  // Обработчик для поля поиска, если используется
   const searchInput = document.getElementById("searchInput");
   if (searchInput) {
     const storedSearchValue = localStorage.getItem("searchInputValue");
