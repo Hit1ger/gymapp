@@ -91,61 +91,32 @@ document.getElementById("addSetButton").addEventListener("click", () => {
 // Функция таймера (с дыхательным циклом)
 function startTimer(seconds) {
     const timerElement = document.getElementById("timer");
-    // const breathTextElement = document.getElementById("breathText"); // логика фаз дыхания закомментирована
-    // Вместо этого создаём или получаем элемент для подсказок:
-    let tipTextElement = document.getElementById("tipText");
-    if (!tipTextElement) {
-        tipTextElement = document.createElement("div");
-        tipTextElement.id = "tipText";
-        tipTextElement.style.color = "white";
-        tipTextElement.style.textAlign = "center";
-        tipTextElement.style.marginTop = "10px";
-        // Предположим, что он должен располагаться под таймером внутри оверлея:
-        document.getElementById("overlay").appendChild(tipTextElement);
-    }
-
+    const breathTextElement = document.getElementById("breathText");
     const overlay = document.getElementById("overlay");
     overlay.style.display = "flex";
-
-    // Загружаем подсказки из localStorage (если нет, используем дефолтный массив)
-    const tips = JSON.parse(localStorage.getItem("tips")) || [
-        "Не забывайте дышать глубоко",
-        "Сосредоточьтесь на качестве повторений",
-        "Держите спину ровной",
-        "Контролируйте каждое движение"
+    const phases = [
+        { text: "Вдох", duration: 3 },
+        { text: "Пауза", duration: 2 },
+        { text: "Выдох", duration: 5 },
+        { text: "Пауза", duration: 2 }
     ];
-
-    let elapsed = 0;
+    const totalCycle = phases.reduce((sum, phase) => sum + phase.duration, 0);
+    let elapsedCycle = 0;
     let remaining = seconds;
     timerElement.textContent = `${remaining}`;
-
-    // Первоначальная установка подсказки
-    tipTextElement.textContent = tips[Math.floor(Math.random() * tips.length)];
-
     const interval = setInterval(() => {
         remaining--;
-        elapsed++;
-
+        elapsedCycle++;
         if (remaining > 0) {
             timerElement.textContent = `${remaining}`;
         } else {
             clearInterval(interval);
             timerElement.textContent = "GO!";
-            tipTextElement.textContent = "";
+            breathTextElement.textContent = "";
             overlay.style.display = "none";
             return;
         }
-
-        // Закомментированная логика фаз дыхательного цикла:
-        /*
-        const phases = [
-            { text: "Вдох", duration: 3 },
-            { text: "Пауза", duration: 2 },
-            { text: "Выдох", duration: 5 },
-            { text: "Пауза", duration: 2 }
-        ];
-        const totalCycle = phases.reduce((sum, phase) => sum + phase.duration, 0);
-        const currentPhaseTime = elapsed % totalCycle;
+        const currentPhaseTime = elapsedCycle % totalCycle;
         let phaseStart = 0;
         for (let i = 0; i < phases.length; i++) {
             if (currentPhaseTime < phaseStart + phases[i].duration) {
@@ -154,16 +125,8 @@ function startTimer(seconds) {
             }
             phaseStart += phases[i].duration;
         }
-        */
-
-        // Новая логика умных подсказок: меняем текст каждые 30 секунд
-        if (elapsed % 30 === 0) {
-            const randomIndex = Math.floor(Math.random() * tips.length);
-            tipTextElement.textContent = tips[randomIndex];
-        }
     }, 1000);
 }
-
 
 // Обработчики кнопок перехода между упражнениями
 document.getElementById("nextExercise").addEventListener("click", () => {
