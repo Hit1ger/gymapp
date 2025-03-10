@@ -49,22 +49,14 @@ function filterExercises() {
   const selectedMuscle = muscleFilter.value.trim();
 
   document.querySelectorAll(".exercise-item").forEach(item => {
-    // Текст внутри элемента включает заголовок, описание и прочее
     const text = item.textContent.toLowerCase();
-    // Проверяем соответствие поисковому запросу
     const matchesSearch = text.includes(searchValue);
-    // Проверяем, если выбрана группа мышц – есть ли она в data-атрибуте
     const itemMuscles = item.getAttribute("data-muscle-group")?.split(",").map(m => m.trim()) || [];
     const matchesMuscle = selectedMuscle === "" || itemMuscles.includes(selectedMuscle);
 
-    if (matchesSearch && matchesMuscle) {
-      item.style.display = "block";
-    } else {
-      item.style.display = "none";
-    }
+    item.style.display = (matchesSearch && matchesMuscle) ? "block" : "none";
   });
 
-  // Обновляем счетчик результатов поиска (если требуется)
   const visibleCount = document.querySelectorAll(".exercise-item[style*='display: block']").length;
   const searchResultCount = document.getElementById("searchResultCount");
   if (searchResultCount) {
@@ -75,6 +67,7 @@ function filterExercises() {
       searchResultCount.textContent = "";
       searchResultCount.style.display = "none";
     }
+  }
 }
 
 let exercises = [];
@@ -83,8 +76,14 @@ let exercises = [];
 function renderExercises() {
   const exerciseList = document.getElementById("exerciseList");
   const exerciseCount = document.getElementById("exerciseCount");
+  if (!exerciseList) {
+    console.error("Элемент с id 'exerciseList' не найден");
+    return;
+  }
   exerciseList.innerHTML = "";
-  exerciseCount.textContent = `(${exercises.length})`;
+  if (exerciseCount) {
+    exerciseCount.textContent = `(${exercises.length})`;
+  }
 
   // Перебираем упражнения и для каждого создаём элемент
   exercises.forEach((exercise, index) => {
@@ -173,69 +172,4 @@ function startSingleExerciseWorkout(exercise) {
     name: currentExerciseData.title,
     exercises: [{
       name: currentExerciseData.title,
-      reps: currentExerciseData.reps,
-      weight: 0, // начальное значение веса
-      rest: currentExerciseData.rest_time,
-      setsDetails: []
-    }]
-  };
-  currentExerciseIndex = 0; // единственное упражнение
-
-  // Устанавливаем заголовок модального окна тренировки
-  const workoutTitleEl = document.getElementById("workoutTitle");
-  if (workoutTitleEl) {
-    workoutTitleEl.textContent = currentWorkout.name;
-  } else {
-    console.error("Элемент с id='workoutTitle' не найден. Проверьте HTML-модальное окно.");
-    return;
-  }
-
-  // Вызываем функцию loadExercise() из WorkoutSaver.js, чтобы сформировать интерфейс тренировки
-  if (typeof loadExercise === "function") {
-    loadExercise();
-  } else {
-    console.error("Функция loadExercise не найдена. Проверьте подключение файла WorkoutSaver.js.");
-    return;
-  }
-
-  // Открываем модальное окно тренировки
-  const exerciseModal = document.getElementById("exerciseModal");
-  if (exerciseModal) {
-    exerciseModal.style.display = "flex";
-  } else {
-    console.error("Элемент с id='exerciseModal' не найден. Проверьте HTML-модальное окно.");
-  }
-}
-
-// Загрузка упражнений и установка обработчиков при загрузке страницы
-document.addEventListener("DOMContentLoaded", () => {
-  // Загрузка упражнений из localStorage, если они там есть
-  const storedExercises = localStorage.getItem("exercises");
-  if (storedExercises) {
-    exercises = JSON.parse(storedExercises);
-  }
-  renderExercises();
-  updateMuscleFilterOptions();
-
-  // Обработчик для поля поиска, если используется
-  const searchInput = document.getElementById("searchInput");
-  if (searchInput) {
-    const storedSearchValue = localStorage.getItem("searchInputValue");
-    if (storedSearchValue !== null) {
-      searchInput.value = storedSearchValue;
-    }
-    searchInput.addEventListener("input", function () {
-      localStorage.setItem("searchInputValue", this.value);
-      filterExercises();
-      updateMuscleFilterOptions();
-    });
-  }
-
-  const muscleFilter = document.getElementById("muscleFilter");
-  if (muscleFilter) {
-    muscleFilter.addEventListener("change", function () {
-      localStorage.setItem("muscleFilterValue", this.value);
-      filterExercises();
-    });
-  }
-});
+      re
