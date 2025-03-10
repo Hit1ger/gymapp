@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Файлы</title>
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-    <header style="">
+    <header>
         <p>Файлы</p>
     </header>
 
@@ -19,7 +18,8 @@
 
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <p>Тренировки</p>
-            <div style="display: flex; justify-content: space-between; gap: 10px;"><button id="downloadWorkoutsJSON">Скачать</button>
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <button id="downloadWorkoutsJSON">Скачать</button>
                 <button id="uploadWorkoutsJSON">Загрузить</button>
             </div>
         </div>
@@ -37,6 +37,8 @@
             <div style="display: flex; justify-content: space-between; gap: 10px;">
                 <button id="downloadExercisesJSON">Скачать</button>
                 <button id="uploadExercisesJSON">Загрузить</button>
+                <!-- Новая кнопка для загрузки с сервера -->
+                <button id="fetchExercisesFromServer">Загрузить с сервера</button>
             </div>
         </div>
 
@@ -79,10 +81,8 @@
             reader.onload = function(e) {
                 try {
                     const loadedData = JSON.parse(e.target.result);
-                    // Проверяем тип данных по необходимости, здесь просто сохраняем
                     localStorage.setItem(key, JSON.stringify(loadedData));
                     alert("JSON загружен успешно");
-                    // При необходимости можно перезагрузить страницу или обновить отображение
                 } catch (error) {
                     alert("Ошибка загрузки файла! Убедитесь, что это корректный JSON.");
                 }
@@ -90,7 +90,7 @@
             reader.readAsText(file);
         }
 
-        // Обработчики для секции Тренировки (ключ "workouts")
+        // Обработчики для секции «Тренировки» (ключ "workouts")
         document.getElementById("downloadWorkoutsJSON").addEventListener("click", () => {
             downloadData("workouts", "workouts.json");
         });
@@ -101,10 +101,9 @@
             uploadData(e, "workouts");
         });
 
-        // Обработчики для секции История тренировок (ключ "history")
+        // Обработчики для секции «История тренировок» (ключ "history")
         document.getElementById("downloadWorkoutHistoryJSON").addEventListener("click", () => {
             downloadData("history", "history.json");
-
         });
         document.getElementById("uploadWorkoutHistoryJSON").addEventListener("click", () => {
             document.getElementById("uploadHistoryInput").click();
@@ -113,7 +112,7 @@
             uploadData(e, "history");
         });
 
-        // Обработчики для секции Упражнения (ключ "exercises")
+        // Обработчики для секции «Упражнения» (ключ "exercises")
         document.getElementById("downloadExercisesJSON").addEventListener("click", () => {
             downloadData("exercises", "exercises.json");
         });
@@ -123,7 +122,28 @@
         document.getElementById("uploadExercisesInput").addEventListener("change", (e) => {
             uploadData(e, "exercises");
         });
+
+        // Новая функция для загрузки JSON «exercises» с сервера
+        document.getElementById("fetchExercisesFromServer").addEventListener("click", () => {
+            // Здесь берём JSON-файл из репозитория GitHub (папка db/exercises.json)
+            fetch("https://raw.githubusercontent.com/Hit1ger/gymapp/main/db/exercises.json")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Ошибка загрузки: ${response.status} ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    localStorage.setItem("exercises", JSON.stringify(data));
+                    alert("JSON с упражнениями загружен успешно с сервера!");
+                })
+                .catch(error => {
+                    alert("Не удалось загрузить JSON с сервера. Подробности в консоли.");
+                    console.error(error);
+                });
+        });
     </script>
+
 </body>
 
 </html>
