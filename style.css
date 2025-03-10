@@ -121,8 +121,8 @@ button {
   padding: 10px 15px;
   cursor: pointer;
   border: none;
-  /* background: #007bff;
-  color: white; */
+color: #fff;
+    background: #007df5;
   border-radius: 5px;
   height: 40px;
   width: 100%;
