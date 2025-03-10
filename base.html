@@ -53,6 +53,28 @@
         </div>
 
         <div id="exerciseContainer" class="exercise-container"></div>
+
+<!-- Модальное окно для тренировки -->
+<div id="exerciseModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="workoutTitle"></span>
+      <span class="close" onclick="document.getElementById('exerciseModal').style.display='none'">&times;</span>
+    </div>
+    <div id="exerciseContainer"></div>
+    <button id="addSetButton" class="full-width-btn">Подход</button>
+    <div id="setCounter" class="set-counter">
+      <span>Подходы:</span>
+      <span id="setCount">0</span>
+    </div>
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+      <button id="prevExercise" style="flex: 1; display: none;">Назад</button>
+      <button id="nextExercise" style="flex: 1;">Следующее упражнение</button>
+    </div>
+    <button id="saveProgress" style="margin-top: 10px; width: 100%;">Сохранить</button>
+  </div>
+</div>
+
         
     </main>
 
