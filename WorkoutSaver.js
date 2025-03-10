@@ -192,9 +192,13 @@ function saveWorkoutHistory() {
         })
     });
     localStorage.setItem("history", JSON.stringify(history));
-    // Если в index.html вы хотите отображать историю, можно вызвать функцию loadHistory()
-    // loadHistory();
+    
+    // Вызываем функцию обновления цвета SVG сразу после сохранения тренировки
+    if (typeof updateMuscleColors === "function") {
+        updateMuscleColors(history);
+    }
 }
+
 
 // Функция обновления отображения кнопок навигации (Следующее/Назад)
 function updateNavigationButtons() {
