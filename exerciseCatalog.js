@@ -1,54 +1,69 @@
 let exercises = [];
 
 function renderExercises() {
-    const exerciseContainer = document.getElementById("exerciseContainer");
-    const exerciseCount = document.getElementById("exerciseCount");
-    exerciseContainer.innerHTML = "";
-    exerciseCount.textContent = `(${exercises.length})`;
+  const exerciseContainer = document.getElementById("exerciseContainer");
+  const exerciseCount = document.getElementById("exerciseCount");
+  exerciseContainer.innerHTML = "";
+  exerciseCount.textContent = `(${exercises.length})`;
 
-    // Проходим по списку и рендерим
-    exercises.forEach(exercise => {
-        const exerciseDiv = document.createElement("div");
-        exerciseDiv.classList.add("exercise-item");
+  // Перебираем упражнения с индексом для возможности удаления
+  exercises.forEach((exercise, index) => {
+    const exerciseDiv = document.createElement("div");
+    exerciseDiv.classList.add("exercise-item");
 
-        // Основной блок
-        exerciseDiv.innerHTML = `
-  <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
-    <div>
-      <p style="font-size: 17px; color: black;">${exercise.title}</p>
-      <p>Группа мышц: ${exercise.muscle_group.join(", ")}</p>
-    </div>
-    <span class="exercise-rating">${exercise.rating.toFixed(1)} ★</span>
-  </div>
-`;
+    // Основной блок
+    exerciseDiv.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
+        <div>
+          <p style="font-size: 17px; color: black;">${exercise.title}</p>
+          <p>Группа мышц: ${exercise.muscle_group.join(", ")}</p>
+        </div>
+        <span class="exercise-rating">${exercise.rating.toFixed(1)} ★</span>
+      </div>
+    `;
 
-        // Скрытая часть с деталями
-        const detailsDiv = document.createElement("div");
-        detailsDiv.classList.add("exercise-details");
-        detailsDiv.style.display = "none";
-        detailsDiv.innerHTML = `
-  <p>${exercise.description}</p>
-  <p>Подходы: ${exercise.sets}</p>
-  <p>Повторения: ${exercise.reps}</p>
-  <p>Перерыв: ${exercise.rest_time} секунд</p>
-  <p>Оборудование: ${exercise.equipment}</p>
-`;
+    // Скрытая часть с деталями и кнопкой удаления
+    const detailsDiv = document.createElement("div");
+    detailsDiv.classList.add("exercise-details");
+    detailsDiv.style.display = "none";
+    detailsDiv.innerHTML = `
+      <p>${exercise.description}</p>
+      <p>Подходы: ${exercise.sets}</p>
+      <p>Повторения: ${exercise.reps}</p>
+      <p>Перерыв: ${exercise.rest_time} секунд</p>
+      <p>Оборудование: ${exercise.equipment}</p>
+      <button class="delete-exercise" style="width: 100%; background: red; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; margin-top: 10px;">
+        Удалить упражнение
+      </button>
+    `;
 
-        exerciseDiv.appendChild(detailsDiv);
-
-        // По клику показываем/скрываем детали
-        exerciseDiv.addEventListener("click", () => {
-            detailsDiv.style.display = detailsDiv.style.display === "none" ? "block" : "none";
-        });
-
-        // Для фильтрации по muscleGroup
-        exerciseDiv.setAttribute("data-muscle-group", exercise.muscle_group.map(m => m.trim()).join(","));
-        exerciseContainer.appendChild(exerciseDiv);
+    // Обработчик удаления упражнения
+    const deleteButton = detailsDiv.querySelector(".delete-exercise");
+    deleteButton.addEventListener("click", (event) => {
+      event.stopPropagation(); // предотвращаем переключение видимости деталей
+      if (confirm("Удалить упражнение?")) {
+        exercises.splice(index, 1); // удаляем упражнение из массива
+        localStorage.setItem("exercises", JSON.stringify(exercises));
+        renderExercises(); // обновляем отображение списка
+      }
     });
 
-    // Сохраняем обновлённый список в localStorage
-    localStorage.setItem("exercises", JSON.stringify(exercises));
+    exerciseDiv.appendChild(detailsDiv);
+
+    // По клику по упражнению переключаем видимость деталей
+    exerciseDiv.addEventListener("click", () => {
+      detailsDiv.style.display = detailsDiv.style.display === "none" ? "block" : "none";
+    });
+
+    // Добавляем атрибут для фильтрации по группам мышц
+    exerciseDiv.setAttribute("data-muscle-group", exercise.muscle_group.map(m => m.trim()).join(","));
+    exerciseContainer.appendChild(exerciseDiv);
+  });
+
+  // Сохраняем обновлённый список в localStorage
+  localStorage.setItem("exercises", JSON.stringify(exercises));
 }
+
 
 // Обновляем опции фильтра (группы мышц)
 function updateMuscleFilterOptions() {
