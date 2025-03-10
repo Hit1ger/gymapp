@@ -86,20 +86,28 @@ function renderExercises() {
   localStorage.setItem("exercises", JSON.stringify(exercises));
 }
 
-// Функция для запуска тренировки с одним упражнением
 function startSingleExerciseWorkout(exercise) {
-  // Название тренировки будет совпадать с названием упражнения
-  const workoutName = exercise.title;
+  // Получаем список упражнений из localStorage
+  const storedExercises = JSON.parse(localStorage.getItem("exercises")) || [];
+  // Ищем упражнение по названию (без учёта регистра и лишних пробелов)
+  const currentExerciseData = storedExercises.find(item =>
+    item.title.toLowerCase().trim() === exercise.title.toLowerCase().trim()
+  );
+  if (!currentExerciseData) {
+    console.error("Упражнение не найдено в localStorage.");
+    return;
+  }
 
-  // Формируем объект тренировки
+  // Формируем объект тренировки, используя данные из localStorage
+  // Название, количество подходов (sets), повторения (reps) и таймер (rest_time) берутся из currentExerciseData
   currentWorkout = {
-    name: workoutName,
+    name: currentExerciseData.title, // имя тренировки равно названию упражнения
     exercises: [{
-      name: exercise.title,
-      reps: exercise.reps,
-      weight: 0,         // начальное значение веса; можно изменить по необходимости
-      rest: exercise.rest_time,
-      setsDetails: []    // для хранения выполненных подходов
+      name: currentExerciseData.title,
+      reps: currentExerciseData.reps,
+      weight: 0,                 // начальное значение веса, его можно изменить пользователем
+      rest: currentExerciseData.rest_time,
+      setsDetails: []            // сюда будут записываться данные по подходам
     }]
   };
   currentExerciseIndex = 0; // Единственное упражнение
@@ -113,7 +121,7 @@ function startSingleExerciseWorkout(exercise) {
     return;
   }
 
-  // Вызываем функцию loadExercise() из WorkoutSaver.js – она заполнит modal содержимым:
+  // Вызываем функцию loadExercise() из WorkoutSaver.js – она должна сформировать интерфейс модального окна
   if (typeof loadExercise === "function") {
     loadExercise();
   } else {
@@ -129,6 +137,7 @@ function startSingleExerciseWorkout(exercise) {
     console.error("Элемент с id='exerciseModal' не найден. Проверьте HTML-модальное окно.");
   }
 }
+
 
 // Загрузка упражнений и установка обработчиков при загрузке страницы
 document.addEventListener("DOMContentLoaded", () => {
