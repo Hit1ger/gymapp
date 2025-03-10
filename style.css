@@ -518,10 +518,6 @@ select.filter-box,
   margin-top: 10px;
 }
 
-#historyList {
-  margin-top: 15px;
-}
-
 .file_block {
   display: flex;
   justify-content: space-between;
@@ -644,7 +640,7 @@ select.filter-box,
   position: relative;
   width: 100%;
   margin-bottom: 10px;
-  margin-top: 20px;
+
 }
 
 .search-box {
