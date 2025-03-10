@@ -11,7 +11,7 @@ let exercises = [];
 
 // Функция рендеринга списка упражнений
 function renderExercises() {
-  const exerciseList = document.getElementById("exerciseContainer");
+  const exerciseList = document.getElementById("exerciseList");
   const exerciseCount = document.getElementById("exerciseCount");
   exerciseList.innerHTML = "";
   exerciseCount.textContent = `(${exercises.length})`;
