@@ -41,23 +41,6 @@
 
 <main>
 
-<div id="svgWrapper">
-  <div id="calves-container" class="svg-holder"></div>
-  <div id="quads-container" class="svg-holder"></div>
-  <div id="abdominals-container" class="svg-holder"></div>
-  <div id="obliques-container" class="svg-holder"></div>
-  <div id="hands-container" class="svg-holder"></div>
-  <div id="forearms-container" class="svg-holder"></div>
-  <div id="biceps-container" class="svg-holder"></div>
-  <div id="front-shoulders-container" class="svg-holder"></div>
-  <div id="chest-container" class="svg-holder"></div>
-  <div id="traps-container" class="svg-holder"></div>
-  <!-- Если необходимо, можно добавить и контейнер для модели тела -->
-  <div id="body-container" class="svg-holder"></div>
-</div>
-
-
-
     <div id="svgWrapper">
 
     <!-- Первая картинка -->
@@ -315,25 +298,7 @@
 <script src="sw.js"></script>
 <script src="WorkoutSaver.js"></script>
 <script src="WorkoutProgress.js"></script>
-<script>
-function loadSVG(filename, containerId) {
-  fetch(filename)
-    .then(response => response.text())
-    .then(svgContent => {
-      document.getElementById(containerId).innerHTML = svgContent;
-    })
-    .catch(err => console.error(`Ошибка загрузки ${filename}:`, err));
-}
 
-document.addEventListener("DOMContentLoaded", function() {
-  loadSVG('calves.svg', 'calves-container');
-  loadSVG('quads.svg', 'quads-container');
-  loadSVG('abdominals.svg', 'abdominals-container');
-  // Загрузите остальные svg по аналогии
-});
-
-
-</script>
 
 </body>
 
