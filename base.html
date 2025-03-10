@@ -32,30 +32,275 @@
         </nav>
     </header>
 
-   <main>
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Поиск по названию..." class="search-box">
-      <button class="reset-search-btn" onclick="resetSearch()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
-          <line x1="1" y1="1" x2="11" y2="11" />
-          <line x1="11" y1="1" x2="1" y2="11" />
-        </svg>
-      </button>
+    <main>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Поиск по названию..." class="search-box">
+            <button class="reset-search-btn" onclick="resetSearch()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+                    <line x1="1" y1="1" x2="11" y2="11" />
+                    <line x1="11" y1="1" x2="1" y2="11" />
+                </svg>
+            </button>
+        </div>
+
+        <span id="searchResultCount"></span>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <select id="muscleFilter" class="filter-box">
+                <option value="">Все группы мышц</option>
+            </select>
+        </div>
+
+        <div id="exerciseContainer" class="exercise-container"></div>
+
+<!-- Модальное окно для тренировки (копия из index.html) -->
+<div id="exerciseModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="workoutTitle"></span>
+      <span class="close" onclick="document.getElementById('exerciseModal').style.display='none'">&times;</span>
     </div>
-
-    <span id="searchResultCount"></span>
-
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-      <select id="muscleFilter" class="filter-box">
-        <option value="">Все группы мышц</option>
-      </select>
+    <div id="exerciseContainer"></div>
+    <button id="addSetButton" class="full-width-btn">Подход</button>
+    <div id="setCounter" class="set-counter">
+      <span>Подходы:</span>
+      <span id="setCount">0</span>
     </div>
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+      <button id="prevExercise" style="flex: 1; display: none;">Назад</button>
+      <button id="nextExercise" style="flex: 1;">Следующее упражнение</button>
+    </div>
+    <button id="saveProgress" style="margin-top: 10px; width: 100%;">Сохранить</button>
+  </div>
+</div>
 
-    <!-- Контейнер для списка упражнений -->
-    <div id="exerciseList" class="exercise-container"></div>
-   
-  </main>
+<div id="overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center;">
+  <div id="timer" style="font-size: 48px; color: white;"></div>
+</div>
+
+        
+    </main>
+
     <script src="custom.js"></script>
+    <script>/*
+  Новый вариант WorkoutSaver.js для тренировки с одним упражнением.
+  Он ожидает, что объект currentWorkout будет установлен извне.
+  currentWorkout должен иметь вид:
+    {
+      name: <название упражнения>,
+      exercises: [{
+        name: <название упражнения>,
+        reps: <начальное количество повторений>,
+        weight: <начальное значение веса, например 0>,
+        rest: <время отдыха в секундах>,
+        setsDetails: [] // сюда будут добавляться данные по подходам
+      }],
+      startTime: <устанавливается при первом подходе>
+    }
+*/
+
+// Глобальные переменные
+let currentRest = 30; // время отдыха по умолчанию (может быть переопределено)
+let currentWorkout = null; // объект тренировки (устанавливается извне)
+let currentExerciseIndex = 0; // для тренировки с одним упражнением всегда 0
+let setCount = 0; // количество сделанных подходов
+
+// Функция закрытия модального окна по id
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Функция загрузки текущего упражнения в модальное окно
+function loadExercise() {
+  if (!currentWorkout || !currentWorkout.exercises || currentWorkout.exercises.length === 0) {
+    console.error("Нет данных тренировки");
+    return;
+  }
+  const exercise = currentWorkout.exercises[currentExerciseIndex];
+  // Обновляем счетчик подходов
+  setCount = exercise.setsDetails.length || 0;
+  const setCountEl = document.getElementById("setCount");
+  if (setCountEl) {
+    setCountEl.textContent = setCount;
+  }
+  // Заполняем контейнер упражнения: название, повторения и вес
+  const exerciseContainer = document.getElementById("exerciseContainer");
+  if (exerciseContainer) {
+    exerciseContainer.innerHTML = `
+      <p><strong>Упражнение:</strong> ${exercise.name}</p>
+      <label>Повторений:</label>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button type="button" id="decreaseReps">−</button>
+        <input type="number" id="reps" value="${exercise.reps}" style="text-align: center; width: 60px;">
+        <button type="button" id="increaseReps">+</button>
+      </div>
+      <label>Вес (кг):</label>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button type="button" id="decreaseWeight">−</button>
+        <input type="number" id="weight" value="${exercise.weight || 0}" step="0.5" style="text-align: center; width: 60px;">
+        <button type="button" id="increaseWeight">+</button>
+      </div>
+    `;
+  } else {
+    console.error("Элемент #exerciseContainer не найден.");
+  }
+  // Добавляем обработчики для кнопок увеличения/уменьшения повторений и веса
+  addExerciseControls();
+}
+
+// Обработчик кнопки "Подход" (должен быть в HTML элемент с id="addSetButton")
+document.getElementById("addSetButton").addEventListener("click", () => {
+  if (!currentWorkout) {
+    console.error("Тренировка не инициализирована.");
+    return;
+  }
+  // Если тренировка только началась, установим время старта
+  if (!currentWorkout.startTime) {
+    currentWorkout.startTime = Date.now();
+  }
+  const repsInput = document.getElementById("reps");
+  const weightInput = document.getElementById("weight");
+  const reps = repsInput ? repsInput.value : 0;
+  const weight = weightInput ? weightInput.value : 0;
+  // Добавляем данные подхода в объект тренировки
+  currentWorkout.exercises[currentExerciseIndex].setsDetails.push({ reps, weight });
+  setCount = currentWorkout.exercises[currentExerciseIndex].setsDetails.length;
+  const setCountEl = document.getElementById("setCount");
+  if (setCountEl) {
+    setCountEl.textContent = setCount;
+  }
+  // Запускаем таймер отдыха с подсказками, используя время отдыха из currentWorkout.exercises[currentExerciseIndex].rest
+  startTimer(currentWorkout.exercises[currentExerciseIndex].rest);
+});
+
+// Обработчик кнопки "Сохранить" (элемент с id="saveProgress")
+document.getElementById("saveProgress").addEventListener("click", () => {
+  const repsInput = document.getElementById("reps");
+  const weightInput = document.getElementById("weight");
+  const newReps = repsInput ? parseInt(repsInput.value) : 0;
+  const newWeight = weightInput ? parseFloat(weightInput.value) : 0;
+  currentWorkout.exercises[currentExerciseIndex].reps = newReps;
+  currentWorkout.exercises[currentExerciseIndex].weight = newWeight;
+  // Сохраняем историю тренировки в localStorage
+  saveWorkoutHistory();
+  alert("Тренировка сохранена!");
+  closeModal("exerciseModal");
+});
+
+// Функция таймера с подсказками (ожидается, что на странице есть элемент #overlay, а внутри – #timer)
+function startTimer(seconds) {
+  const timerElement = document.getElementById("timer");
+  let tipTextElement = document.getElementById("tipText");
+  if (!tipTextElement) {
+    tipTextElement = document.createElement("div");
+    tipTextElement.id = "tipText";
+    tipTextElement.style.color = "white";
+    tipTextElement.style.textAlign = "center";
+    tipTextElement.style.marginTop = "10px";
+    const overlay = document.getElementById("overlay");
+    if (overlay) {
+      overlay.appendChild(tipTextElement);
+    } else {
+      console.error("Элемент #overlay не найден.");
+    }
+  }
+  const overlay = document.getElementById("overlay");
+  if (overlay) {
+    overlay.style.display = "flex";
+  }
+  const tips = JSON.parse(localStorage.getItem("tips")) || [
+    "Не забывайте дышать глубоко",
+    "Сосредоточьтесь на качестве повторений",
+    "Держите спину ровной",
+    "Контролируйте каждое движение"
+  ];
+  let elapsed = 0;
+  let remaining = seconds;
+  if (timerElement) {
+    timerElement.textContent = remaining;
+  }
+  tipTextElement.textContent = tips[Math.floor(Math.random() * tips.length)];
+  const interval = setInterval(() => {
+    remaining--;
+    elapsed++;
+    if (timerElement) {
+      timerElement.textContent = remaining > 0 ? remaining : "GO!";
+    }
+    if (remaining <= 0) {
+      clearInterval(interval);
+      if (overlay) {
+        overlay.style.display = "none";
+      }
+      return;
+    }
+    if (elapsed % 30 === 0) {
+      tipTextElement.textContent = tips[Math.floor(Math.random() * tips.length)];
+    }
+  }, 1000);
+}
+
+// Функция для добавления обработчиков кнопок увеличения/уменьшения повторений и веса
+function addExerciseControls() {
+  const increaseReps = document.getElementById("increaseReps");
+  const decreaseReps = document.getElementById("decreaseReps");
+  const increaseWeight = document.getElementById("increaseWeight");
+  const decreaseWeight = document.getElementById("decreaseWeight");
+
+  if (increaseReps) {
+    increaseReps.addEventListener("click", () => {
+      const repsInput = document.getElementById("reps");
+      repsInput.value = parseInt(repsInput.value) + 1;
+    });
+  }
+  if (decreaseReps) {
+    decreaseReps.addEventListener("click", () => {
+      const repsInput = document.getElementById("reps");
+      repsInput.value = Math.max(0, parseInt(repsInput.value) - 1);
+    });
+  }
+  if (increaseWeight) {
+    increaseWeight.addEventListener("click", () => {
+      const weightInput = document.getElementById("weight");
+      weightInput.value = (parseFloat(weightInput.value) + 0.5).toFixed(1);
+    });
+  }
+  if (decreaseWeight) {
+    decreaseWeight.addEventListener("click", () => {
+      const weightInput = document.getElementById("weight");
+      weightInput.value = Math.max(0, parseFloat(weightInput.value) - 0.5).toFixed(1);
+    });
+  }
+}
+
+// Функция сохранения тренировки в историю (записываем в localStorage под ключом "history")
+function saveWorkoutHistory() {
+  let history = JSON.parse(localStorage.getItem("history")) || [];
+  const now = new Date();
+  let durationFormatted = "0 мин 0 сек";
+  if (currentWorkout.startTime) {
+    const duration = now.getTime() - currentWorkout.startTime;
+    const minutes = Math.floor(duration / 60000);
+    const seconds = Math.floor((duration % 60000) / 1000);
+    durationFormatted = `${minutes} мин ${seconds} сек`;
+  }
+  history.push({
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString(),
+    name: currentWorkout.name,
+    duration: durationFormatted,
+    exercises: currentWorkout.exercises.map(e => ({
+      name: e.name,
+      reps: e.reps,
+      setsDetails: e.setsDetails
+    }))
+  });
+  localStorage.setItem("history", JSON.stringify(history));
+}
+</script>
     <script src="exerciseCatalog.js"></script>
 
 </body>
