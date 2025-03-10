@@ -32,7 +32,7 @@ function renderExercises() {
       <p>Повторения: ${exercise.reps}</p>
       <p>Перерыв: ${exercise.rest_time} секунд</p>
       <p>Оборудование: ${exercise.equipment}</p>
-      <button class="delete-exercise" style="width: 100%; background: red; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; margin-top: 10px;">
+      <button class="delete-exercise" style="margin-top: 15px; margin-bottom: 5px; width: 100%; background: red; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; margin-top: 10px;">
         Удалить упражнение
       </button>
     `;
