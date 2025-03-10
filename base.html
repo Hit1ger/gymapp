@@ -6,330 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>База упражнений</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Стили для контейнера поиска с кнопкой сброса в виде SVG-крестика */
-        .search-container {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            margin-bottom: 5px;
-        }
-
-        .search-box {
-            width: 100%;
-            padding-right: 40px;
-            box-sizing: border-box;
-            height: 40px;
-        }
-
-        .reset-search-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: auto;
-        }
-
-        .reset-search-btn svg {
-            width: 12px;
-            height: 12px;
-            fill: none;
-            stroke: #545454;
-            stroke-width: 1.5;
-        }
-
-        .reset-search-btn:hover svg {
-            stroke: #000;
-        }
-
-        #searchResultCount {
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #333;
-            display: none;
-        }
-
-        .exercise-details {
-            margin-top: 10px;
-        }
-    </style>
 </head>
 
 <body>
 
     <header class="site-header">
-  <!-- Логотип / Название -->
-  <div class="site-header__logo">
-   База упражнений <span id="exerciseCount">(0)</span>
-  </div>
+        <div class="site-header__logo">
+            База упражнений <span id="exerciseCount">(0)</span>
+        </div>
 
-  <!-- Кнопка-гамбургер (когда ширина экрана маленькая) -->
-  <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-  </button>
-
-  <!-- Основная навигация (для десктопа и мобильного) -->
-  <nav class="site-nav" id="mobileNav">
-    <ul>
-      <li><a href="index.html">Главная</a></li>
-      <li><a href="workout-list.html">Тренировки</a></li>
-      <li><a href="current-workout.html">Старт</a></li>
-      <li><a href="base.html">База</a></li>
-      <li><a href="analytics.html">Анализ</a></li>
-        <li><a href="files.html">Файлы</a></li>
-      <!-- Добавьте свои пункты меню -->
-    </ul>
-  </nav>
-</header>
-    
-    <input type="file" id="uploadExercisesInput" accept=".json" style="display: none;">
-
-    <!-- Поле для поиска -->
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Поиск по названию..." class="search-box">
-        <button class="reset-search-btn" onclick="resetSearch()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
-                <line x1="1" y1="1" x2="11" y2="11" />
-                <line x1="11" y1="1" x2="1" y2="11" />
-            </svg>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
         </button>
-    </div>
 
-    <span id="searchResultCount"></span>
+        <nav class="site-nav" id="mobileNav">
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="workout-list.html">Мои тренировки</a></li>
+                <li><a href="current-workout.html">История тренировок</a></li>
+                <li><a href="base.html">База упражнений</a></li>
+                <li><a href="analytics.html">Аналитика</a></li>
+                <li><a href="files.html">Файлы</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <!-- Выбор группы мышц (оставляем) -->
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <select id="muscleFilter" class="filter-box">
-            <option value="">Все группы мышц</option>
-        </select>
-        <!-- СЕЛЕКТ ДЛЯ СОРТИРОВКИ УДАЛЁН -->
-    </div>
+    <main>
 
-    <div id="exerciseContainer" class="exercise-container"></div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Поиск по названию..." class="search-box">
+            <button class="reset-search-btn" onclick="resetSearch()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+                    <line x1="1" y1="1" x2="11" y2="11" />
+                    <line x1="11" y1="1" x2="1" y2="11" />
+                </svg>
+            </button>
+        </div>
 
-    <script>
-        let exercises = [];
+        <span id="searchResultCount"></span>
 
-        function renderExercises() {
-            const exerciseContainer = document.getElementById("exerciseContainer");
-            const exerciseCount = document.getElementById("exerciseCount");
-            exerciseContainer.innerHTML = "";
-            exerciseCount.textContent = `(${exercises.length})`;
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <select id="muscleFilter" class="filter-box">
+                <option value="">Все группы мышц</option>
+            </select>
+        </div>
 
-            // Проходим по списку и рендерим
-            exercises.forEach(exercise => {
-                const exerciseDiv = document.createElement("div");
-                exerciseDiv.classList.add("exercise-item");
+        <div id="exerciseContainer" class="exercise-container"></div>
 
-                // Основной блок
-                exerciseDiv.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
-            <div>
-              <p style="font-size: 17px; color: black;">${exercise.title}</p>
-              <p>Группа мышц: ${exercise.muscle_group.join(", ")}</p>
-            </div>
-            <span class="exercise-rating">${exercise.rating.toFixed(1)} ★</span>
-          </div>
-        `;
+    </main>
 
-                // Скрытая часть с деталями
-                const detailsDiv = document.createElement("div");
-                detailsDiv.classList.add("exercise-details");
-                detailsDiv.style.display = "none";
-                detailsDiv.innerHTML = `
-          <p>${exercise.description}</p>
-          <p>Подходы: ${exercise.sets}</p>
-          <p>Повторения: ${exercise.reps}</p>
-          <p>Перерыв: ${exercise.rest_time} секунд</p>
-          <p>Оборудование: ${exercise.equipment}</p>
-        `;
-
-                exerciseDiv.appendChild(detailsDiv);
-
-                // По клику показываем/скрываем детали
-                exerciseDiv.addEventListener("click", () => {
-                    detailsDiv.style.display = detailsDiv.style.display === "none" ? "block" : "none";
-                });
-
-                // Для фильтрации по muscleGroup
-                exerciseDiv.setAttribute("data-muscle-group", exercise.muscle_group.map(m => m.trim()).join(","));
-                exerciseContainer.appendChild(exerciseDiv);
-            });
-
-            // Сохраняем обновлённый список в localStorage
-            localStorage.setItem("exercises", JSON.stringify(exercises));
-        }
-
-        // Обновляем опции фильтра (группы мышц)
-        function updateMuscleFilterOptions() {
-            const muscleFilter = document.getElementById("muscleFilter");
-            const searchValue = document.getElementById("searchInput").value.toLowerCase();
-
-            // Фильтруем, чтобы находить только те упражнения, которые видны при текущем поиске
-            const filtered = exercises.filter(exercise => {
-                const allText = exercise.title + " " + exercise.description + " " + exercise.muscle_group.join(" ");
-                return allText.toLowerCase().includes(searchValue);
-            });
-            const muscleGroups = new Set();
-            filtered.forEach(ex => ex.muscle_group.forEach(m => muscleGroups.add(m)));
-
-            const storedMuscleFilter = localStorage.getItem("muscleFilterValue") || "";
-            muscleFilter.innerHTML = `<option value="">Все группы мышц</option>`;
-
-            muscleGroups.forEach(muscle => {
-                const option = document.createElement("option");
-                option.value = muscle;
-                option.textContent = muscle;
-                muscleFilter.appendChild(option);
-            });
-
-            if (storedMuscleFilter && muscleGroups.has(storedMuscleFilter)) {
-                muscleFilter.value = storedMuscleFilter;
-            } else {
-                muscleFilter.value = "";
-                localStorage.setItem("muscleFilterValue", "");
-            }
-        }
-
-        function filterExercises() {
-            const searchValue = document.getElementById("searchInput").value.toLowerCase();
-            const muscleValue = document.getElementById("muscleFilter").value;
-            let visibleCount = 0;
-            
-            document.querySelectorAll(".exercise-item").forEach(item => {
-                const matchesSearch = item.textContent.toLowerCase().includes(searchValue);
-                const muscleGroups = item.getAttribute("data-muscle-group") ?
-                    item.getAttribute("data-muscle-group").split(",") : [];
-                const matchesMuscle = !muscleValue || muscleGroups.some(m => m.trim() === muscleValue.trim());
-                
-                if (matchesSearch && matchesMuscle) {
-                    item.style.display = "block";
-                    visibleCount++;
-                } else {
-                    item.style.display = "none";
-                }
-            });
-
-            const resultSpan = document.getElementById("searchResultCount");
-            if (searchValue.trim() !== "") {
-                resultSpan.textContent = "Результаты поиска: " + visibleCount;
-                resultSpan.style.display = "block";
-            } else {
-                resultSpan.textContent = "";
-                resultSpan.style.display = "none";
-            }
-        }
-
-        function resetSearch() {
-            document.getElementById("searchInput").value = "";
-            localStorage.setItem("searchInputValue", "");
-            filterExercises();
-            updateMuscleFilterOptions();
-        }
-
-        // Скачивание данных
-        function downloadData(key, filename) {
-            const data = localStorage.getItem(key) || "[]";
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(data);
-            const downloadAnchor = document.createElement("a");
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", filename);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            document.body.removeChild(downloadAnchor);
-        }
-
-        // Загрузка данных
-        function uploadData(event, key) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const loadedData = JSON.parse(e.target.result);
-                    localStorage.setItem(key, JSON.stringify(loadedData));
-                    alert("JSON загружен успешно");
-                } catch (error) {
-                    alert("Ошибка загрузки файла! Убедитесь, что это корректный JSON.");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        // Загрузка / рендер + сортировка по убыванию
-        document.addEventListener("DOMContentLoaded", () => {
-            const storedExercises = localStorage.getItem("exercises");
-            if (storedExercises) {
-                exercises = JSON.parse(storedExercises);
-            } else {
-                // Если в localStorage ничего нет, попробуем загрузить из "db/exercise.json" (если требуется)
-                // Иначе можно сразу exercises = [];
-                /*
-                fetch("db/exercise.json")
-                    .then(response => response.json())
-                    .then(data => { exercises = data; ... })
-                    .catch(error => console.error("Ошибка загрузки:", error));
-                */
-            }
-
-            // ВАЖНО: сортируем exercises по убыванию rating
-            exercises.sort((a, b) => b.rating - a.rating);
-
-            renderExercises();
-            updateMuscleFilterOptions();
-
-            // Восстанавливаем поисковый запрос, если был
-            const storedSearchValue = localStorage.getItem("searchInputValue");
-            if (storedSearchValue !== null) {
-                document.getElementById("searchInput").value = storedSearchValue;
-            }
-
-            filterExercises();
-            updateMuscleFilterOptions();
-
-            // Навешиваем обработчики
-            document.getElementById("searchInput").addEventListener("input", function() {
-                localStorage.setItem("searchInputValue", this.value);
-                filterExercises();
-                updateMuscleFilterOptions();
-            });
-            document.getElementById("muscleFilter").addEventListener("change", function() {
-                localStorage.setItem("muscleFilterValue", this.value);
-                filterExercises();
-            });
-
-            // Кнопки скачивания / загрузки
-            document.getElementById("downloadExercisesJSON").addEventListener("click", () => {
-                downloadData("exercises", "exercises.json");
-            });
-            document.getElementById("uploadExercisesJSON").addEventListener("click", () => {
-                document.getElementById("uploadExercisesInput").click();
-            });
-            document.getElementById("uploadExercisesInput").addEventListener("change", (e) => {
-                uploadData(e, "exercises");
-            });
-        });
-    </script>
-
-    <script>
-  // Находим кнопку и блок меню:
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mobileNav = document.getElementById('mobileNav');
-
-  hamburgerBtn.addEventListener('click', () => {
-    // Переключаем класс .show на nav
-    mobileNav.classList.toggle('show');
-  });
-</script>
+    <script src="custom.js"></script>
+    <script src="exerciseCatalog.js"></script>
 
 </body>
+
 </html>

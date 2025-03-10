@@ -1,34 +1,34 @@
 @font-face {
-	font-family: 'SF UI Text';
-	src: url('font/SFUIText-Regular.eot');
-	src: local('SF UI Text Regular'), local('SFUIText-Regular'),
-		url('font/SFUIText-Regular.eot?#iefix') format('embedded-opentype'),
-		url('font/SFUIText-Regular.woff') format('woff'),
-		url('font/SFUIText-Regular.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
+  font-family: 'SF UI Text';
+  src: url('font/SFUIText-Regular.eot');
+  src: local('SF UI Text Regular'), local('SFUIText-Regular'),
+    url('font/SFUIText-Regular.eot?#iefix') format('embedded-opentype'),
+    url('font/SFUIText-Regular.woff') format('woff'),
+    url('font/SFUIText-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-	font-family: 'SF UI Text';
-	src: url('font/SFUIText-Light.eot');
-	src: local('SF UI Text Light'), local('SFUIText-Light'),
-		url('font/SFUIText-Light.eot?#iefix') format('embedded-opentype'),
-		url('font/SFUIText-Light.woff') format('woff'),
-		url('font/SFUIText-Light.ttf') format('truetype');
-	font-weight: 300;
-	font-style: normal;
+  font-family: 'SF UI Text';
+  src: url('font/SFUIText-Light.eot');
+  src: local('SF UI Text Light'), local('SFUIText-Light'),
+    url('font/SFUIText-Light.eot?#iefix') format('embedded-opentype'),
+    url('font/SFUIText-Light.woff') format('woff'),
+    url('font/SFUIText-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
 }
 
 @font-face {
-	font-family: 'SF UI Text';
-	src: url('font/SFUIText-Medium.eot');
-	src: local('SF UI Text Medium'), local('SFUIText-Medium'),
-		url('font/SFUIText-Medium.eot?#iefix') format('embedded-opentype'),
-		url('font/SFUIText-Medium.woff') format('woff'),
-		url('font/SFUIText-Medium.ttf') format('truetype');
-	font-weight: 500;
-	font-style: normal;
+  font-family: 'SF UI Text';
+  src: url('font/SFUIText-Medium.eot');
+  src: local('SF UI Text Medium'), local('SFUIText-Medium'),
+    url('font/SFUIText-Medium.eot?#iefix') format('embedded-opentype'),
+    url('font/SFUIText-Medium.woff') format('woff'),
+    url('font/SFUIText-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
 }
 
 html,
@@ -36,19 +36,22 @@ body {
   height: 100%;
   margin: 0;
   box-sizing: border-box;
- 
 }
 
 body {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  padding: 20px;
+  /* padding: 20px; */
   font-family: 'SF UI Text', sans-serif;
   font-optical-sizing: auto;
-  font-weight: <weight>;
+  font-weight: 400;
   font-style: normal;
   background: #f3f2f8;
+}
+
+main {
+  padding: 20px;
 }
 
 header {
@@ -58,15 +61,13 @@ header {
   margin-bottom: 20px;
 }
 
-
 /* Общий стиль шапки */
 .site-header {
-  position: relative; 
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-
 }
 
 /* Логотип */
@@ -86,7 +87,7 @@ header {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   width: auto;
 }
 
@@ -103,7 +104,7 @@ header {
   list-style: none;
   display: flex;
   gap: 20px;
-  margin: 0; 
+  margin: 0;
   padding: 0;
 }
 
@@ -126,18 +127,18 @@ header {
     width: 100%;
     background: #f8f8f8;
     border-top: 1px solid #ccc;
+    z-index: 1;
     /* По умолчанию скрыто */
-   /* Вместо display:none – используем max-height:0 + overflow:hidden */
+    /* Вместо display:none – используем max-height:0 + overflow:hidden */
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease; /* Анимация плавного изменения высоты */
     flex-direction: column;
-           
-  
-            background: #ffffff;
+
+    background: #ffffff;
   }
   .site-nav ul {
-  flex-direction: column;
+    flex-direction: column;
     gap: 0;
     margin: 0;
     padding: 0;
@@ -145,7 +146,7 @@ header {
   .site-nav ul li {
     border-bottom: 1px solid #eee;
     text-align: left;
-    padding: 10px 20px;
+    padding: 15px 20px;
   }
   .site-nav a {
     display: block;
@@ -159,13 +160,12 @@ header {
   }
 }
 
-
 button {
   padding: 10px 15px;
   cursor: pointer;
   border: none;
-color: #fff;
-    background: #007df5;
+  color: #fff;
+  background: #007df5;
   border-radius: 5px;
   height: 40px;
   width: 100%;
@@ -198,7 +198,7 @@ label {
 }
 
 .exercise-item > div label {
-  flex: 1;          /* Пусть лейбл растягивается на оставшееся пространство */
+  flex: 1; /* Пусть лейбл растягивается на оставшееся пространство */
   min-width: 120px; /* Можно задать разумный минимум */
   box-sizing: border-box;
 }
@@ -212,6 +212,7 @@ label {
   background: rgba(0, 0, 0, 0.5);
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 
 .modal-content {
@@ -415,7 +416,7 @@ input[type='number'] {
   background: #fff;
   padding: 10px 15px;
   margin-bottom: 10px;
-  border-radius: 5px;
+  border-radius: 15px;
   border: 1px solid #ccc;
   cursor: pointer;
 }
@@ -428,7 +429,9 @@ input[type='number'] {
 }
 
 select.filter-box,
-#muscleFilterSelect, #workoutFilter, #exerciseFilter {
+#muscleFilterSelect,
+#workoutFilter,
+#exerciseFilter {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -457,12 +460,246 @@ select.filter-box,
 }
 
 .chart-container {
-    margin: 20px 0;
-    border: 1px solid #ccc;
+  margin: 20px 0;
+  border: 1px solid #ccc;
 }
 
 #chartsContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#increaseWeight,
+#decreaseWeight,
+#increaseReps,
+#decreaseReps {
+  margin-bottom: 7px;
+  margin-top: 3px;
+  height: 41.6px;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.history-item.open {
+  flex-direction: column;
+}
+
+.history-name {
+  color: black;
+}
+
+.history-datetime {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.history-datetime,
+.history-duration {
+  font-size: 14px;
+  color: #666;
+}
+
+.history-details {
+  display: none;
+}
+
+#breathText {
+  text-align: center;
+  font-size: 24px;
+  color: #fff;
+  margin-top: 10px;
+}
+
+#historyList {
+  margin-top: 15px;
+}
+
+.file_block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.file_block_buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.search-box {
+  width: 100%;
+  padding-right: 40px;
+  box-sizing: border-box;
+  height: 40px;
+}
+
+.reset-search-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+}
+
+.reset-search-btn svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: #545454;
+  stroke-width: 1.5;
+}
+
+.reset-search-btn:hover svg {
+  stroke: #000;
+}
+
+#searchResultCount {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #333;
+  display: none;
+}
+
+.exercise-details {
+  margin-top: 10px;
+}
+
+#svgWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.svg-holder {
+  width: 300px;
+  position: relative;
+}
+.svg-holder svg {
+  width: 100%;
+  height: auto;
+}
+
+#svgContainer {
+  width: 300px;
+  margin: 0 auto;
+  position: relative;
+}
+.svg-image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.hidden {
+  display: none;
+}
+#hands,
+#forearms {
+  color: white;
+}
+
+/* Стили для кнопки-инфо */
+.info-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: auto;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Стили для блока поиска с кнопкой сброса внутри поля */
+.search-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.search-box {
+  width: 100%;
+  padding-right: 30px;
+  /* отступ справа для кнопки сброса */
+  box-sizing: border-box;
+  height: 40px;
+}
+
+.reset-search-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+}
+
+#searchResultCount {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.reset-search-btn svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: #545454;
+  stroke-width: 1.5;
+}
+
+.reset-search-btn:hover svg {
+  stroke: #000;
+}
+
+/* Стили для элементов списка упражнений в модальном окне выбора (теперь div) */
+#exerciseListModal .exercise-item-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Стили для модального окна описания упражнения */
+#exerciseDescriptionModal .modal-content {
+  max-width: 500px;
+  margin: auto;
 }

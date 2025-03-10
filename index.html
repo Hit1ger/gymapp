@@ -3,93 +3,49 @@
 
 <head>
     <meta charset="UTF-8">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon-180.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Главная</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
-<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
     
-    <style>
-
-#svgWrapper {
-      display: flex;
-      flex-direction: row;   /* Горизонтально */
-      gap: 20px;            /* Отступ между SVG */
-      justify-content: center;
-      margin-top: 20px; /* немного воздуха сверху */
-    }
-    .svg-holder {
-      width: 300px; /* Примерная фиксированная ширина под каждую SVG */
-      position: relative;
-    }
-    .svg-holder svg {
-      width: 100%;
-      height: auto;
-    }
-        
-    #svgContainer {
-        width: 300px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .svg-image {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    .hidden {
-      display: none;
-    }
-    #hands, #forearms{
-        color: white;
-    }
-  </style>
 </head>
 
 <body>
 
 <header class="site-header">
-  <!-- Логотип / Название -->
   <div class="site-header__logo">
-    <a href="index.html">Gym</a>
+    <a href="index.html">GymApp</a>
   </div>
 
-  <!-- Кнопка-гамбургер (когда ширина экрана маленькая) -->
   <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
-    <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
   </button>
 
-  <!-- Основная навигация (для десктопа и мобильного) -->
   <nav class="site-nav" id="mobileNav">
     <ul>
-      <li><a href="index.html">Главная</a></li>
-      <li><a href="workout-list.html">Тренировки</a></li>
-      <li><a href="current-workout.html">Старт</a></li>
-      <li><a href="base.html">База</a></li>
-      <li><a href="analytics.html">Анализ</a></li>
-        <li><a href="files.html">Файлы</a></li>
-      <!-- Добавьте свои пункты меню -->
+    <li><a href="index.html">Главная</a></li>
+                <li><a href="workout-list.html">Мои тренировки</a></li>
+                <li><a href="current-workout.html">История тренировок</a></li>
+                <li><a href="base.html">База упражнений</a></li>
+                <li><a href="analytics.html">Аналитика</a></li>
+                <li><a href="files.html">Файлы</a></li>
     </ul>
   </nav>
 </header>
 
+<main>
 
     <div id="svgWrapper">
 
     <!-- Первая картинка -->
     <div class="svg-holder">
-      <!-- Вставьте сюда ваш ПЕРВЫЙ svg-код -->
-   
-      <!-- Здесь может быть inline SVG или тег <img> с src -->
+
       <svg viewBox="0 0 660.46 1206.46" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-screen lg:w-full mc:h-[700px] 2xl:h-[90vh] 3xl:h-[95vh] 4xl:h-screen sm:mx-auto object-fit  menor ">
         <defs>
             <radialGradient id="jointradial" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
@@ -295,153 +251,53 @@
 
   </div>
 
-    <script>
-// Сопоставление мышц и id SVG-элементов с поддержкой нескольких ID
-const muscleMapping = {
-  "Ноги": ["quads"],
-  "Ягодицы": ["glutes"],
-  "Грудь": ["chest"],
-  "Трицепс": ["triceps"],
-  "Плечи": ["front-shoulders", "rear-shoulders"],
-  "Бицепс": ["biceps"],
-  "Пресс": ["abdominals"],
-  "Спина": ["obliques", "lats", "traps-middle", "lowerback"], 
-  "Икры": ["calves", "calves2"],
-  "Внутренняя поверхность бедра": ["hamstrings"],
-  "Трапеция": ["traps", "traps2"]
-};
+  <div style="bottom: 20px;
+    position: absolute;">
+  <button id="startWorkout">Начать тренировку</button>
+</div>
 
-function parseDate(dateStr) {
-  const parts = dateStr.split('.');
-  return new Date(parts[2], parts[1] - 1, parts[0]);
-}
+<div id="workoutModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>Выберите тренировку</span>
+                    <span class="close" onclick="closeModal('workoutModal')">&times;</span>
+                </div>
+                <div id="workoutList"></div>
+            </div>
+        </div>
 
-function daysDiff(dateStr) {
-  const now = new Date();
-  const workoutDate = parseDate(dateStr);
-  return (now - workoutDate) / (1000 * 60 * 60 * 24);
-}
+        <div id="exerciseModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span id="workoutTitle"></span>
+                    <span class="close" onclick="closeModal('exerciseModal')">&times;</span>
+                </div>
+                <div id="exerciseContainer"></div>
+                <button id="addSetButton" class="full-width-btn">Подход</button>
+                <div id="setCounter" class="set-counter">
+                    <span>Подходы:</span>
+                    <span id="setCount">0</span>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="prevExercise" style="flex: 1; display: none;">Назад</button>
+                    <button id="nextExercise" style="flex: 1;">Следующее упражнение</button>
+                </div>
+                <button id="saveProgress" style="margin-top: 10px; width: 100%;">Сохранить</button>
+            </div>
+        </div>
 
-function muscleWorkedRecently(muscle, workoutData, days) {
-  return workoutData.some(entry => 
-    daysDiff(entry.date) <= days &&
-    entry.exercises.some(ex => ex.muscle_group.includes(muscle))
-  );
-}
+        <!-- Обновлённый оверлей для таймера с дополнительным элементом для дыхательного текста -->
+        <div id="overlay" style="flex-direction: column;">
+            <div id="timer"></div>
+            <div id="breathText"></div>
+        </div>
 
-function noWorkoutForMuscleDays(muscle, workoutData, days) {
-  return !muscleWorkedRecently(muscle, workoutData, days);
-}
+  </main>
 
-// Полностью исправленная функция проверки прогресса
-function isProgressive(muscle, workoutData) {
-  const relevantWorkouts = workoutData
-    .filter(entry => entry.exercises.some(ex => ex.muscle_group.includes(muscle)))
-    .sort((a, b) => parseDate(b.date) - parseDate(a.date));
-
-  if (relevantWorkouts.length < 2) return false;
-
-  const [latestWorkout, previousWorkout] = relevantWorkouts;
-
-  for (let latestExercise of latestWorkout.exercises.filter(ex => ex.muscle_group.includes(muscle))) {
-    const previousExercise = previousWorkout.exercises.find(ex => ex.name === latestExercise.name);
-    if (!previousExercise) continue;
-
-    const latestMaxWeight = Math.max(...latestExercise.setsDetails.map(set => parseFloat(set.weight) || 0));
-    const previousMaxWeight = Math.max(...previousExercise.setsDetails.map(set => parseFloat(set.weight) || 0));
-
-    const latestTotalReps = latestExercise.setsDetails.reduce((sum, set) => sum + parseInt(set.reps || 0), 0);
-    const previousTotalReps = previousExercise.setsDetails.reduce((sum, set) => sum + parseInt(set.reps || 0), 0);
-
-    const latestSetsCount = latestExercise.setsDetails.length;
-    const previousSetsCount = previousExercise.setsDetails.length;
-
-    if (latestMaxWeight > previousMaxWeight || latestTotalReps > previousTotalReps || latestSetsCount > previousSetsCount) {
-      return 'progress';
-    } else if (latestMaxWeight < previousMaxWeight || latestTotalReps < previousTotalReps || latestSetsCount < previousSetsCount) {
-      return 'regress';
-    }
-  }
-  return false;
-}
-
-
-// Основная функция для обновления цветов мышц
-function updateMuscleColors(workoutData) {
-  Object.entries(muscleMapping).forEach(([muscle, svgIds]) => {
-    const ids = Array.isArray(svgIds) ? svgIds : [svgIds];
-
-    const progressStatus = isProgressive(muscle, workoutData);
-    const workedRecently = muscleWorkedRecently(muscle, workoutData, 7);
-    const noWorkoutLongTime = noWorkoutForMuscleDays(muscle, workoutData, 10);
-
-    ids.forEach(id => {
-      const svgElement = document.getElementById(id);
-      if (!svgElement) return;
-
-      if (progressStatus === 'progress') {
-        svgElement.style.color = "green";  // Рост показателей
-      } else if (progressStatus === 'regress') {
-        svgElement.style.color = "blue";   // Снижение показателей
-      } else if (workedRecently) {
-        svgElement.style.color = "yellow"; // Просто была тренировка
-      } else if (noWorkoutLongTime || workoutData.length === 0) {
-        svgElement.style.color = "red";    // Нет тренировок давно
-      } else {
-        svgElement.style.color = "";       // Стандартный цвет
-      }
-    });
-  });
-}
-
-// Получение данных из localStorage
-const workoutData = JSON.parse(localStorage.getItem("history")) || [];
-
-// Вызов функции
-updateMuscleColors(workoutData);
-
-</script>
-
-<script>
-const svg1 = document.getElementById("svg1");
-const svg2 = document.getElementById("svg2");
-
-function toggleSvg() {
-  if (!svg1.classList.contains("hidden")) {
-    svg1.classList.add("hidden");
-    svg2.classList.remove("hidden");
-  } else {
-    svg2.classList.add("hidden");
-    svg1.classList.remove("hidden");
-  }
-}
-
-svg1.addEventListener("click", toggleSvg);
-svg2.addEventListener("click", toggleSvg);
-
-  </script>
-  
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('Service Worker зарегистрирован!'))
-        .catch(err => console.log('SW регистрация не вышла:', err));
-    });
-  }
-</script>
-
-    <script>
-  // Находим кнопку и блок меню:
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mobileNav = document.getElementById('mobileNav');
-
-  hamburgerBtn.addEventListener('click', () => {
-    // Переключаем класс .show на nav
-    mobileNav.classList.toggle('show');
-  });
-</script>
-
+<script src="custom.js"></script>
+<script src="sw.js"></script>
+<script src="WorkoutSaver.js"></script>
+<script src="WorkoutProgress.js"></script>
 
 </body>
 

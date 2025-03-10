@@ -9,162 +9,68 @@
 </head>
 
 <body>
-<header class="site-header">
-  <!-- Логотип / Название -->
-  <div class="site-header__logo">
-   Файлы
-  </div>
+    <header class="site-header">
+        <div class="site-header__logo">
+            Файлы
+        </div>
 
-  <!-- Кнопка-гамбургер (когда ширина экрана маленькая) -->
-  <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-  </button>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
 
-  <!-- Основная навигация (для десктопа и мобильного) -->
-  <nav class="site-nav" id="mobileNav">
-    <ul>
-      <li><a href="index.html">Главная</a></li>
-      <li><a href="workout-list.html">Тренировки</a></li>
-      <li><a href="current-workout.html">Старт</a></li>
-      <li><a href="base.html">База</a></li>
-      <li><a href="analytics.html">Анализ</a></li>
-        <li><a href="files.html">Файлы</a></li>
-      <!-- Добавьте свои пункты меню -->
-    </ul>
-  </nav>
-</header>
+        <nav class="site-nav" id="mobileNav">
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="workout-list.html">Мои тренировки</a></li>
+                <li><a href="current-workout.html">История тренировок</a></li>
+                <li><a href="base.html">База упражнений</a></li>
+                <li><a href="analytics.html">Аналитика</a></li>
+                <li><a href="files.html">Файлы</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <main>
 
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <p>Тренировки</p>
-            <div style="display: flex; justify-content: space-between; gap: 10px;">
+        <div class="file_block">
+            <span>Тренировки</span>
+            <div class="file_block_buttons">
                 <button id="downloadWorkoutsJSON">Скачать</button>
                 <button id="uploadWorkoutsJSON">Загрузить</button>
             </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <p>История тренировок</p>
-            <div style="display: flex; justify-content: space-between; gap: 10px;">
+
+        <div class="file_block">
+            <span>История тренировок</span>
+            <div class="file_block_buttons">
                 <button id="downloadWorkoutHistoryJSON">Скачать</button>
                 <button id="uploadWorkoutHistoryJSON">Загрузить</button>
             </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <p>Упражнения</p>
-            <div style="display: flex; justify-content: space-between; gap: 10px;">
+        <div class="file_block">
+            <span>Упражнения</span>
+            <div class="file_block_buttons">
                 <button id="downloadExercisesJSON">Скачать</button>
                 <button id="uploadExercisesJSON">Загрузить</button>
-                <!-- Новая кнопка для загрузки с сервера -->
                 <button id="fetchExercisesFromServer">Загрузить с сервера</button>
             </div>
         </div>
 
     </main>
 
-    <!-- Скрытые input для загрузки файлов -->
     <input type="file" id="uploadWorkoutsInput" accept=".json" style="display: none;">
     <input type="file" id="uploadHistoryInput" accept=".json" style="display: none;">
     <input type="file" id="uploadExercisesInput" accept=".json" style="display: none;">
 
     <script>
-        // Функция для скачивания данных из localStorage в виде JSON-файла
-        function downloadData(key, filename) {
-            const data = localStorage.getItem(key) || "[]";
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(data);
-            const downloadAnchor = document.createElement("a");
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", filename);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            document.body.removeChild(downloadAnchor);
-        }
 
-        // Функция обработки загрузки файла и сохранения данных в localStorage
-        function uploadData(event, key) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const loadedData = JSON.parse(e.target.result);
-                    localStorage.setItem(key, JSON.stringify(loadedData));
-                    alert("JSON загружен успешно");
-                } catch (error) {
-                    alert("Ошибка загрузки файла! Убедитесь, что это корректный JSON.");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        // Обработчики для секции «Тренировки» (ключ "workouts")
-        document.getElementById("downloadWorkoutsJSON").addEventListener("click", () => {
-            downloadData("workouts", "workouts.json");
-        });
-        document.getElementById("uploadWorkoutsJSON").addEventListener("click", () => {
-            document.getElementById("uploadWorkoutsInput").click();
-        });
-        document.getElementById("uploadWorkoutsInput").addEventListener("change", (e) => {
-            uploadData(e, "workouts");
-        });
-
-        // Обработчики для секции «История тренировок» (ключ "history")
-        document.getElementById("downloadWorkoutHistoryJSON").addEventListener("click", () => {
-            downloadData("history", "history.json");
-        });
-        document.getElementById("uploadWorkoutHistoryJSON").addEventListener("click", () => {
-            document.getElementById("uploadHistoryInput").click();
-        });
-        document.getElementById("uploadHistoryInput").addEventListener("change", (e) => {
-            uploadData(e, "history");
-        });
-
-        // Обработчики для секции «Упражнения» (ключ "exercises")
-        document.getElementById("downloadExercisesJSON").addEventListener("click", () => {
-            downloadData("exercises", "exercises.json");
-        });
-        document.getElementById("uploadExercisesJSON").addEventListener("click", () => {
-            document.getElementById("uploadExercisesInput").click();
-        });
-        document.getElementById("uploadExercisesInput").addEventListener("change", (e) => {
-            uploadData(e, "exercises");
-        });
-
-        // Новая функция для загрузки JSON «exercises» с сервера
-        document.getElementById("fetchExercisesFromServer").addEventListener("click", () => {
-            // Здесь берём JSON-файл из репозитория GitHub (папка db/exercises.json)
-            fetch("https://raw.githubusercontent.com/Hit1ger/gymapp/main/db/exercises.json")
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Ошибка загрузки: ${response.status} ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    localStorage.setItem("exercises", JSON.stringify(data));
-                    alert("JSON с упражнениями загружен успешно с сервера!");
-                })
-                .catch(error => {
-                    alert("Не удалось загрузить JSON с сервера. Подробности в консоли.");
-                    console.error(error);
-                });
-        });
     </script>
 
-    <script>
-  // Находим кнопку и блок меню:
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mobileNav = document.getElementById('mobileNav');
-
-  hamburgerBtn.addEventListener('click', () => {
-    // Переключаем класс .show на nav
-    mobileNav.classList.toggle('show');
-  });
-</script>
+    <script src="custom.js"></script>
+    <script src="fileStorage.js"></script>
 </body>
 
 </html>
