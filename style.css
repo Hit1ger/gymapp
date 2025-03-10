@@ -27,6 +27,96 @@ header {
   margin-bottom: 20px;
 }
 
+
+/* Общий стиль шапки */
+.site-header {
+  position: relative; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: #f8f8f8; /* светлый фон */
+}
+
+/* Логотип */
+.site-header__logo a {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* Кнопка-гамбургер */
+.hamburger {
+  display: none; /* по умолчанию скрыта, покажем её на мобильных */
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.hamburger-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #000;
+  transition: 0.3s;
+}
+
+/* Сами ссылки (навигация) */
+.site-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0; 
+  padding: 0;
+}
+
+.site-nav a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 500;
+}
+
+/* --- Адаптация под мобильный (примерный брейкпоинт 768px) --- */
+@media (max-width: 768px) {
+  /* Показываем гамбургер, прячем обычное горизонтальное меню */
+  .hamburger {
+    display: flex;
+  }
+  .site-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #f8f8f8;
+    border-top: 1px solid #ccc;
+    /* По умолчанию скрыто */
+    display: none;
+    flex-direction: column;
+  }
+  .site-nav ul {
+    flex-direction: column;
+    gap: 0;
+  }
+  .site-nav ul li {
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    padding: 10px 20px;
+  }
+  .site-nav a {
+    display: block;
+    width: 100%;
+  }
+  .site-nav.show {
+    display: flex; /* показываем меню при активации */
+  }
+}
+
+
 button {
   padding: 10px 15px;
   cursor: pointer;
