@@ -590,7 +590,7 @@ select.filter-box,
   flex-direction: row;
   gap: 20px;
   justify-content: center;
-  margin-top: 20px;
+ 
   min-height: 400px;
 }
 .svg-holder {
