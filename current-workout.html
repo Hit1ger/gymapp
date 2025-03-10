@@ -64,13 +64,32 @@ margin-bottom: 7px;
 
 <body>
 
-    <header>
-        <p>История тренировок</p>
-        <div style="display: flex; justify-content: space-between; gap: 10px;">
-            <button id="downloadWorkoutHistoryJSON">Скачать</button>
-            <button id="uploadWorkoutHistoryJSON">Загрузить</button>
-        </div>
-    </header>
+<header class="site-header">
+  <!-- Логотип / Название -->
+  <div class="site-header__logo">
+    <a href="index.html">Gym</a>
+  </div>
+
+  <!-- Кнопка-гамбургер (когда ширина экрана маленькая) -->
+  <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Основная навигация (для десктопа и мобильного) -->
+  <nav class="site-nav" id="mobileNav">
+    <ul>
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="workout-list.html">Тренировки</a></li>
+      <li><a href="current-workout.html">Старт</a></li>
+      <li><a href="base.html">База</a></li>
+      <li><a href="analytics.html">Анализ</a></li>
+        <li><a href="files.html">Файлы</a></li>
+      <!-- Добавьте свои пункты меню -->
+    </ul>
+  </nav>
+</header>
 
     <input type="file" id="uploadHistoryInput" accept=".json" style="display: none;">
 
