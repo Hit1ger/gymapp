@@ -330,5 +330,16 @@
         });
     </script>
 
+    <script>
+  // Находим кнопку и блок меню:
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileNav = document.getElementById('mobileNav');
+
+  hamburgerBtn.addEventListener('click', () => {
+    // Переключаем класс .show на nav
+    mobileNav.classList.toggle('show');
+  });
+</script>
+
 </body>
 </html>
