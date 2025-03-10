@@ -79,3 +79,16 @@ document.getElementById("fetchExercisesFromServer").addEventListener("click", ()
             console.error(error);
         });
 });
+
+// Обработчики для секции «Подсказки» (ключ "tips")
+document.getElementById("downloadTipsJSON").addEventListener("click", () => {
+    downloadData("tips", "tips.json");
+});
+document.getElementById("uploadTipsJSON").addEventListener("click", () => {
+    document.getElementById("uploadExercisesInput").click(); // если отдельного input для подсказок нет, создайте его или используйте существующий
+    // Лучше создать новый скрытый input:
+    // <input type="file" id="uploadTipsInput" accept=".json" style="display: none;">
+});
+document.getElementById("uploadTipsInput").addEventListener("change", (e) => {
+    uploadData(e, "tips");
+});
