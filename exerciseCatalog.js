@@ -77,17 +77,6 @@ function filterExercises() {
     }
 }
 
-
-
-// Если функции updateMuscleFilterOptions и filterExercises не определены в других файлах,
-// добавляем базовые заглушки, чтобы ошибки не возникали.
-function updateMuscleFilterOptions() {
-  // Добавьте логику, если необходимо.
-}
-function filterExercises() {
-  // Добавьте логику, если необходимо.
-}
-
 let exercises = [];
 
 // Функция рендеринга списка упражнений
