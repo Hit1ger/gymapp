@@ -1,4 +1,4 @@
-<div id="svg2" class="svg-image hidden">
+<div id="svg2" class="svg-image">
     <svg viewBox="0 0 660.46 1206.46" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-screen lg:w-full mc:h-[700px] 2xl:h-[90vh] 3xl:h-[95vh] 4xl:h-screen sm:mx-auto object-fit  menor ">
         <defs>
             <radialGradient id="jointradial" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
