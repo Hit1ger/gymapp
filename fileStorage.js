@@ -92,3 +92,22 @@ document.getElementById("uploadTipsJSON").addEventListener("click", () => {
 document.getElementById("uploadTipsInput").addEventListener("change", (e) => {
     uploadData(e, "tips");
 });
+
+// Функция для загрузки JSON «tips» с сервера
+document.getElementById("fetchTipsFromServer").addEventListener("click", () => {
+    fetch("https://raw.githubusercontent.com/Hit1ger/gymapp/main/db/tips.json")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Ошибка загрузки: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            localStorage.setItem("tips", JSON.stringify(data));
+            alert("JSON с советами загружен успешно с сервера!");
+        })
+        .catch(error => {
+            alert("Не удалось загрузить JSON с сервера. Подробности в консоли.");
+            console.error(error);
+        });
+});
