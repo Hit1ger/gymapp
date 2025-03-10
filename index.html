@@ -12,45 +12,45 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
-    
+
 </head>
 
 <body>
 
-<header class="site-header">
-  <div class="site-header__logo">
-    <a href="index.html">GymApp</a>
-  </div>
+    <header class="site-header">
+        <div class="site-header__logo">
+            <a href="index.html">GymApp</a>
+        </div>
 
-  <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-  </button>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
 
-  <nav class="site-nav" id="mobileNav">
-    <ul>
-    <li><a href="index.html">Главная</a></li>
+        <nav class="site-nav" id="mobileNav">
+            <ul>
+                <li><a href="index.html">Главная</a></li>
                 <li><a href="workout-list.html">Мои тренировки</a></li>
                 <li><a href="current-workout.html">История тренировок</a></li>
                 <li><a href="base.html">База упражнений</a></li>
                 <li><a href="analytics.html">Аналитика</a></li>
                 <li><a href="files.html">Файлы</a></li>
-    </ul>
-  </nav>
-</header>
+            </ul>
+        </nav>
+    </header>
 
-<main>
-<div id="svgWrapper">
-      <div id="svgFile1" class="svg-holder"></div>
-      <div id="svgFile2" class="svg-holder"></div>
-    </div>
-    
-  <div style="bottom: 20px;
+    <main>
+        <div id="svgWrapper">
+            <div id="svgFile1" class="svg-holder"></div>
+            <div id="svgFile2" class="svg-holder"></div>
+        </div>
+
+        <div style="bottom: 20px;
     position: absolute;">
-  <button id="startWorkout">Начать тренировку</button>
-</div>
+            <button id="startWorkout">Начать тренировку</button>
+        </div>
 
-<div id="workoutModal" class="modal" style="display:none;">
+        <div id="workoutModal" class="modal" style="display:none;">
             <div class="modal-content">
                 <div class="modal-header">
                     <span>Выберите тренировку</span>
@@ -80,50 +80,16 @@
             </div>
         </div>
 
-        <!-- Обновлённый оверлей для таймера с дополнительным элементом для дыхательного текста -->
         <div id="overlay" style="flex-direction: column;">
             <div id="timer"></div>
             <div id="breathText"></div>
         </div>
 
-  </main>
+    </main>
 
-<script src="custom.js"></script>
-<script src="sw.js"></script>
-<script src="WorkoutSaver.js"></script>
-<script src="WorkoutProgress.js"></script>
-
-   <script>
-    function loadSVG(fileName, containerId) {
-      fetch(fileName)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Ошибка загрузки ${fileName}: ${response.statusText}`);
-          }
-          return response.text();
-        })
-        .then(svgContent => {
-          document.getElementById(containerId).innerHTML = svgContent;
-        })
-        .catch(error => console.error(error));
-    }
-
-    // Функция, вызывающая логику обновления цвета мышц
-    function initializeMuscleLogic() {
-      const workoutData = JSON.parse(localStorage.getItem("history")) || [];
-      updateMuscleColors(workoutData);
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      // Загрузка обоих SVG-файлов, которые расположены в корне проекта
-      loadSVG('svg1.svg', 'svgFile1');
-      loadSVG('svg2.svg', 'svgFile2');
-
-      // Для корректного обновления цвета мышц убедитесь, что оба SVG загружены.
-      // Можно установить задержку или отследить завершение загрузки каждого файла.
-      // В данном примере вызываем логику с небольшой задержкой.
-      setTimeout(initializeMuscleLogic, 500);
-    });
-  </script>
+    <script src="custom.js"></script>
+    <script src="sw.js"></script>
+    <script src="WorkoutSaver.js"></script>
+    <script src="WorkoutProgress.js"></script>
 
 </html>
