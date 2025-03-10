@@ -34,6 +34,8 @@
 
     <main>
 
+<button id="createExerciseBtn" style="margin-bottom: 20px;">Создать упражнение</button>
+        
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Поиск по названию..." class="search-box">
             <button class="reset-search-btn" onclick="resetSearch()">
@@ -54,11 +56,110 @@
 
         <div id="exerciseContainer" class="exercise-container"></div>
 
+<div id="createExerciseModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>Добавление упражнения</span>
+        <span class="close" id="closeCreateExerciseModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="newExerciseTitle" placeholder="Название упражнения" required style="margin-bottom: 10px; height: 40px;">
+        <textarea id="newExerciseDescription" placeholder="Описание упражнения" required style="margin-bottom: 10px; height: 60px;"></textarea>
+        <div style="margin-bottom: 10px;">
+          <span>Группа мышц:</span><br>
+          <!-- Чекбоксы для выбора групп мышц -->
+          <label><input type="checkbox" name="newExerciseMuscle" value="Ноги"> Ноги</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Ягодицы"> Ягодицы</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Грудь"> Грудь</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Трицепс"> Трицепс</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Плечи"> Плечи</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Бицепс"> Бицепс</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Пресс"> Пресс</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Спина"> Спина</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Икры"> Икры</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Внутренняя поверхность бедра"> Внутренняя поверхность бедра</label>
+          <label><input type="checkbox" name="newExerciseMuscle" value="Трапеция"> Трапеция</label>
+        </div>
+        <input type="number" id="newExerciseSets" placeholder="Подходы" required style="margin-bottom: 10px;">
+        <input type="number" id="newExerciseReps" placeholder="Повторения" required style="margin-bottom: 10px;">
+        <input type="number" id="newExerciseRest" placeholder="Перерыв (сек)" required style="margin-bottom: 10px;">
+        <input type="text" id="newExerciseEquipment" placeholder="Оборудование" required style="margin-bottom: 10px;">
+        <input type="number" step="0.1" id="newExerciseRating" placeholder="Средняя оценка" required style="margin-bottom: 10px;">
+        <button id="saveNewExercise">Сохранить</button>
+      </div>
+    </div>
+  </div>
+        
     </main>
 
     <script src="custom.js"></script>
     <script src="exerciseCatalog.js"></script>
+<script>
+    // Открытие модального окна по клику на кнопку "Создать упражнение"
+    document.getElementById("createExerciseBtn").addEventListener("click", () => {
+      document.getElementById("createExerciseModal").style.display = "flex";
+    });
 
+    // Закрытие модального окна по клику на кнопку "×"
+    document.getElementById("closeCreateExerciseModal").addEventListener("click", () => {
+      document.getElementById("createExerciseModal").style.display = "none";
+    });
+
+    // Обработчик для сохранения нового упражнения
+    document.getElementById("saveNewExercise").addEventListener("click", () => {
+      const title = document.getElementById("newExerciseTitle").value.trim();
+      const description = document.getElementById("newExerciseDescription").value.trim();
+
+      // Получаем выбранные группы мышц
+      const muscleCheckboxes = document.querySelectorAll('input[name="newExerciseMuscle"]:checked');
+      let muscleGroups = [];
+      muscleCheckboxes.forEach(chk => {
+        muscleGroups.push(chk.value);
+      });
+
+      const sets = document.getElementById("newExerciseSets").value;
+      const reps = document.getElementById("newExerciseReps").value;
+      const rest_time = document.getElementById("newExerciseRest").value;
+      const equipment = document.getElementById("newExerciseEquipment").value.trim();
+      const rating = parseFloat(document.getElementById("newExerciseRating").value);
+
+      if (!title || !description || muscleGroups.length === 0 || !sets || !reps || !rest_time || !equipment || isNaN(rating)) {
+        alert("Пожалуйста, заполните все поля");
+        return;
+      }
+
+      // Создаем объект упражнения
+      const newExercise = {
+        title: title,
+        description: description,
+        muscle_group: muscleGroups,
+        sets: sets,
+        reps: reps,
+        rest_time: rest_time,
+        equipment: equipment,
+        rating: rating
+      };
+
+      // Добавляем новое упражнение в глобальный массив (переменная exercises определена в exerciseCatalog.js)
+      exercises.push(newExercise);
+      localStorage.setItem("exercises", JSON.stringify(exercises));
+
+      // Обновляем отображение списка упражнений и опций фильтрации
+      renderExercises();
+      updateMuscleFilterOptions();
+
+      // Закрываем модальное окно и очищаем поля формы
+      document.getElementById("createExerciseModal").style.display = "none";
+      document.getElementById("newExerciseTitle").value = "";
+      document.getElementById("newExerciseDescription").value = "";
+      document.querySelectorAll('input[name="newExerciseMuscle"]').forEach(chk => chk.checked = false);
+      document.getElementById("newExerciseSets").value = "";
+      document.getElementById("newExerciseReps").value = "";
+      document.getElementById("newExerciseRest").value = "";
+      document.getElementById("newExerciseEquipment").value = "";
+      document.getElementById("newExerciseRating").value = "";
+    });
+  </script>
 </body>
 
 </html>
