@@ -96,15 +96,20 @@ header {
     background: #f8f8f8;
     border-top: 1px solid #ccc;
     /* По умолчанию скрыто */
-    display: none;
+   /* Вместо display:none – используем max-height:0 + overflow:hidden */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease; /* Анимация плавного изменения высоты */
     flex-direction: column;
             z-index: 9999;
         height: 100vh;
             background: #ffffff;
   }
   .site-nav ul {
-    flex-direction: column;
+  flex-direction: column;
     gap: 0;
+    margin: 0;
+    padding: 0;
   }
   .site-nav ul li {
     border-bottom: 1px solid #eee;
@@ -117,6 +122,9 @@ header {
   }
   .site-nav.show {
     display: flex; /* показываем меню при активации */
+  }
+  .site-nav.show {
+    max-height: 300px; /* Подберите число под ваш список */
   }
 }
 
