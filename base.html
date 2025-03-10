@@ -32,67 +32,62 @@
         </nav>
     </header>
 
-    <main>
-        
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Поиск по названию..." class="search-box">
-            <button class="reset-search-btn" onclick="resetSearch()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
-                    <line x1="1" y1="1" x2="11" y2="11" />
-                    <line x1="11" y1="1" x2="1" y2="11" />
-                </svg>
-            </button>
+   <main>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Поиск по названию..." class="search-box">
+      <button class="reset-search-btn" onclick="resetSearch()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+          <line x1="1" y1="1" x2="11" y2="11" />
+          <line x1="11" y1="1" x2="1" y2="11" />
+        </svg>
+      </button>
+    </div>
+
+    <span id="searchResultCount"></span>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <select id="muscleFilter" class="filter-box">
+        <option value="">Все группы мышц</option>
+      </select>
+    </div>
+
+    <!-- Контейнер для списка упражнений -->
+    <div id="exerciseList" class="exercise-container"></div>
+
+    <!-- Модальное окно для тренировки -->
+    <div id="exerciseModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span id="workoutTitle"></span>
+          <span class="close" onclick="closeModal('exerciseModal')">&times;</span>
         </div>
-
-        <span id="searchResultCount"></span>
-
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <select id="muscleFilter" class="filter-box">
-                <option value="">Все группы мышц</option>
-            </select>
+        <!-- Контейнер для интерфейса тренировки (поля для повторений и веса) -->
+        <div id="workoutInterface"></div>
+        <button id="addSetButton" class="full-width-btn">Подход</button>
+        <div id="setCounter" class="set-counter">
+          <span>Подходы:</span>
+          <span id="setCount">0</span>
         </div>
-
-        <div id="exerciseContainer" class="exercise-container"></div>
-
-<!-- Модальное окно для тренировки (копия из index.html) -->
-<div id="exerciseModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <div class="modal-header">
-      <span id="workoutTitle"></span>
-      <span class="close" onclick="document.getElementById('exerciseModal').style.display='none'">&times;</span>
+        <button id="saveProgress" style="margin-top: 10px; width: 100%;">Сохранить</button>
+      </div>
     </div>
-    <div id="exerciseContainer"></div>
-    <button id="addSetButton" class="full-width-btn">Подход</button>
-    <div id="setCounter" class="set-counter">
-      <span>Подходы:</span>
-      <span id="setCount">0</span>
+
+    <!-- Блок для таймера -->
+    <div id="overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center;">
+      <div id="timer" style="font-size: 48px; color: white;"></div>
     </div>
-    <div style="display: flex; gap: 10px; margin-top: 10px;">
-      <button id="prevExercise" style="flex: 1; display: none;">Назад</button>
-      <button id="nextExercise" style="flex: 1;">Следующее упражнение</button>
-    </div>
-    <button id="saveProgress" style="margin-top: 10px; width: 100%;">Сохранить</button>
-  </div>
-</div>
-
-<div id="overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center;">
-  <div id="timer" style="font-size: 48px; color: white;"></div>
-</div>
-
-        
-    </main>
-
+  </main>
     <script src="custom.js"></script>
     <script>/*
   Новый вариант WorkoutSaver.js для тренировки с одним упражнением.
-  Он ожидает, что объект currentWorkout будет установлен извне.
+  Ожидается, что объект currentWorkout будет установлен извне.
   currentWorkout должен иметь вид:
     {
       name: <название упражнения>,
       exercises: [{
         name: <название упражнения>,
         reps: <начальное количество повторений>,
-        weight: <начальное значение веса, например 0>,
+        weight: <начальное значение веса>,
         rest: <время отдыха в секундах>,
         setsDetails: [] // сюда будут добавляться данные по подходам
       }],
@@ -101,9 +96,9 @@
 */
 
 // Глобальные переменные
-let currentRest = 30; // время отдыха по умолчанию (может быть переопределено)
-let currentWorkout = null; // объект тренировки (устанавливается извне)
-let currentExerciseIndex = 0; // для тренировки с одним упражнением всегда 0
+let currentRest = 30; // время отдыха по умолчанию
+let currentWorkout = null; // объект тренировки, устанавливается извне
+let currentExerciseIndex = 0; // для одного упражнения всегда 0
 let setCount = 0; // количество сделанных подходов
 
 // Функция закрытия модального окна по id
@@ -120,19 +115,19 @@ function loadExercise() {
     console.error("Нет данных тренировки");
     return;
   }
-  const exercise = currentWorkout.exercises[currentExerciseIndex];
+  const exercise = currentWorkout.exercises[0];
   // Обновляем счетчик подходов
   setCount = exercise.setsDetails.length || 0;
   const setCountEl = document.getElementById("setCount");
   if (setCountEl) {
     setCountEl.textContent = setCount;
   }
-  // Заполняем контейнер упражнения: название, повторения и вес
-  const exerciseContainer = document.getElementById("exerciseContainer");
-  if (exerciseContainer) {
-    exerciseContainer.innerHTML = `
+  // Заполняем контейнер интерфейсом тренировки: название, повторения и вес
+  const workoutInterface = document.getElementById("workoutInterface");
+  if (workoutInterface) {
+    workoutInterface.innerHTML = `
       <p><strong>Упражнение:</strong> ${exercise.name}</p>
-      <label>Повторений:</label>
+      <label>Повторения:</label>
       <div style="display: flex; align-items: center; gap: 10px;">
         <button type="button" id="decreaseReps">−</button>
         <input type="number" id="reps" value="${exercise.reps}" style="text-align: center; width: 60px;">
@@ -146,19 +141,19 @@ function loadExercise() {
       </div>
     `;
   } else {
-    console.error("Элемент #exerciseContainer не найден.");
+    console.error("Элемент #workoutInterface не найден.");
   }
   // Добавляем обработчики для кнопок увеличения/уменьшения повторений и веса
   addExerciseControls();
 }
 
-// Обработчик кнопки "Подход" (должен быть в HTML элемент с id="addSetButton")
+// Обработчик кнопки "Подход"
 document.getElementById("addSetButton").addEventListener("click", () => {
   if (!currentWorkout) {
     console.error("Тренировка не инициализирована.");
     return;
   }
-  // Если тренировка только началась, установим время старта
+  // При первом нажатии фиксируем время начала тренировки
   if (!currentWorkout.startTime) {
     currentWorkout.startTime = Date.now();
   }
@@ -166,32 +161,32 @@ document.getElementById("addSetButton").addEventListener("click", () => {
   const weightInput = document.getElementById("weight");
   const reps = repsInput ? repsInput.value : 0;
   const weight = weightInput ? weightInput.value : 0;
-  // Добавляем данные подхода в объект тренировки
-  currentWorkout.exercises[currentExerciseIndex].setsDetails.push({ reps, weight });
-  setCount = currentWorkout.exercises[currentExerciseIndex].setsDetails.length;
+  // Добавляем данные подхода
+  currentWorkout.exercises[0].setsDetails.push({ reps, weight });
+  setCount = currentWorkout.exercises[0].setsDetails.length;
   const setCountEl = document.getElementById("setCount");
   if (setCountEl) {
     setCountEl.textContent = setCount;
   }
-  // Запускаем таймер отдыха с подсказками, используя время отдыха из currentWorkout.exercises[currentExerciseIndex].rest
-  startTimer(currentWorkout.exercises[currentExerciseIndex].rest);
+  // Запускаем таймер отдыха с подсказками
+  startTimer(currentWorkout.exercises[0].rest);
 });
 
-// Обработчик кнопки "Сохранить" (элемент с id="saveProgress")
+// Обработчик кнопки "Сохранить"
 document.getElementById("saveProgress").addEventListener("click", () => {
   const repsInput = document.getElementById("reps");
   const weightInput = document.getElementById("weight");
   const newReps = repsInput ? parseInt(repsInput.value) : 0;
   const newWeight = weightInput ? parseFloat(weightInput.value) : 0;
-  currentWorkout.exercises[currentExerciseIndex].reps = newReps;
-  currentWorkout.exercises[currentExerciseIndex].weight = newWeight;
+  currentWorkout.exercises[0].reps = newReps;
+  currentWorkout.exercises[0].weight = newWeight;
   // Сохраняем историю тренировки в localStorage
   saveWorkoutHistory();
   alert("Тренировка сохранена!");
   closeModal("exerciseModal");
 });
 
-// Функция таймера с подсказками (ожидается, что на странице есть элемент #overlay, а внутри – #timer)
+// Функция таймера с подсказками
 function startTimer(seconds) {
   const timerElement = document.getElementById("timer");
   let tipTextElement = document.getElementById("tipText");
@@ -243,7 +238,7 @@ function startTimer(seconds) {
   }, 1000);
 }
 
-// Функция для добавления обработчиков кнопок увеличения/уменьшения повторений и веса
+// Функция добавления обработчиков для кнопок изменения повторений и веса
 function addExerciseControls() {
   const increaseReps = document.getElementById("increaseReps");
   const decreaseReps = document.getElementById("decreaseReps");
@@ -276,7 +271,7 @@ function addExerciseControls() {
   }
 }
 
-// Функция сохранения тренировки в историю (записываем в localStorage под ключом "history")
+// Функция сохранения истории тренировки в localStorage (под ключом "history")
 function saveWorkoutHistory() {
   let history = JSON.parse(localStorage.getItem("history")) || [];
   const now = new Date();
@@ -300,6 +295,8 @@ function saveWorkoutHistory() {
   });
   localStorage.setItem("history", JSON.stringify(history));
 }
+</script>
+
 </script>
     <script src="exerciseCatalog.js"></script>
 
