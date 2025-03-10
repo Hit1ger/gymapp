@@ -1,4 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@font-face {
+	font-family: 'SF UI Text';
+	src: url('font/SFUIText-Regular.eot');
+	src: local('SF UI Text Regular'), local('SFUIText-Regular'),
+		url('font/SFUIText-Regular.eot?#iefix') format('embedded-opentype'),
+		url('font/SFUIText-Regular.woff') format('woff'),
+		url('font/SFUIText-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'SF UI Text';
+	src: url('font/SFUIText-Light.eot');
+	src: local('SF UI Text Light'), local('SFUIText-Light'),
+		url('font/SFUIText-Light.eot?#iefix') format('embedded-opentype'),
+		url('font/SFUIText-Light.woff') format('woff'),
+		url('font/SFUIText-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'SF UI Text';
+	src: url('font/SFUIText-Medium.eot');
+	src: local('SF UI Text Medium'), local('SFUIText-Medium'),
+		url('font/SFUIText-Medium.eot?#iefix') format('embedded-opentype'),
+		url('font/SFUIText-Medium.woff') format('woff'),
+		url('font/SFUIText-Medium.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+}
 
 html,
 body {
@@ -13,7 +44,7 @@ body {
   flex-direction: column;
   min-height: 100%;
   padding: 20px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'SF UI Text', sans-serif;
   font-optical-sizing: auto;
   font-weight: <weight>;
   font-style: normal;
